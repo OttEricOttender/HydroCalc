@@ -40,8 +40,9 @@
 ### Iteration 2 (4 people, 2 week, X hours)
 
 ## Authors
-* Ott Eric Ottender (role)
-* Lauri Kuresoo (role)
-* Rasmus Meos (role)
-* Robert Ivask (role)
+* Ott Eric Ottender (Lead Requirements Engineer, Programmer, Tester)
+* Lauri Kuresoo (Lead Tester, Requirements Engineer, Programmer)
+* Robert Ivask (Lead Programmer, Requirements Engineer, Programmer)
+* Rasmus Meos (Programmer, Requirements Engineer, Programmer)
+
 
