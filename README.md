@@ -46,7 +46,7 @@
 
 ## About the team
 ### Members
-* Ott Eric Ottender (Lead Requirements Engineer, Programmer, Tester)
+* Ott Eric Ottender (Team lead, Lead Requirements Engineer, Programmer, Tester)
 * Lauri Kuresoo (Lead Tester, Requirements Engineer, Programmer)
 * Robert Ivask (Lead Programmer, Requirements Engineer, Programmer)
 * Rasmus Meos (Programmer, Requirements Engineer, Programmer)
@@ -62,9 +62,15 @@ On a day-to-day basis the communication takes place in a groupchat. Every week, 
   - Before starting to implement any further moves, we will coordinate it witht he customer. They know how to use the databases necessary for the project's work so their explanation serves as approval and acceptance of how the problem should be solved.
     
 * How you are internally going to build the accepted solution (who assigns the tasks, who is going to implement it, will the tests be written, will code be reviewed, who is going to verify, who is doing the validation, etc.)?
-  -
+  - The tasks will be assigned by the current split’s lead. They will also do most of the work during that split (75 hours) with other team members supporting him with 50 hours, 50 hours and 25 hours respectively. These hours will shift depending on the split so that everybody would equal at least 150 hours by the end of course. The code will be reviewed, verified and validated also primarily by the split lead, assisted by other team members, who might have a fresher look at the work that was done during that iteration/split. How testing will work is up for the testing lead to decide.
+ 
 * When do you consider something ready to be delivered to the customer for review?
+  - A function or an element of the application is ready to be delivered and demonstrated to the customer when the function or element has no errors or 1-2 minor errors which do not alter the application in a significant manner and may not be visible unless specifically tested for. Regardless of the visibility, it will still be communicated to the customer and fixed at the earliest possibility.
+
 * How do you gather feedback from the customer and/or end users?
+  - Feedback will be gathered by asking for the client’s opinion after a demo session or an improvement in the project’s work.  After the customer has given the approval to seek people outside of the development team and customer team to test the application, the feedback will be collected via a survey. This is subject to change depending on the customer’s and testing lead’s wishes.
+ 
 * What is the definition of DONE on a task?
+  - A DONE task is something that needs no further work in the current iteration. It must also be confirmed by other team members through review.
 
 
