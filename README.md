@@ -6,6 +6,7 @@
 * Priority groupings for the requirements can be accessed by clicking on the "Priority board" tab.
 * The detailed user cases can be found from this link: http://tiny.cc/fywnzz.
 * Issue tracker is under "Issues" tab.
+* Notes from the first customer meeting can be found here: https://docs.google.com/document/d/1xm6LNthF30PRHFSE0QdR5XlzcX5Ps7gNU7dWMa86AHc/edit?usp=sharing
 
 ## Product Vision
 
