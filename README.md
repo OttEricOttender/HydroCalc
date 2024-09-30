@@ -1,5 +1,12 @@
 # Hydrological Parameters Calculator
 
+## How to navigate our repo for Iteration 1:
+* Product vision, project plan and scope are all written below.
+* Functional requirements, non-functional requirements and user cases can be found in Projects -> System Requirements.
+* Priority groupings for the requirements can be accessed by clicking on the "Priority board" tab.
+* The detailed user cases can be found from this link: http://tiny.cc/fywnzz.
+* Issue tracker is under "Issues" tab.
+
 ## Product Vision
 
 ### Primary Questions
@@ -18,49 +25,73 @@
 
 ## Scope
 
-**Disclaimer: All tasks inside the iterations are ordered by time priority with tasks that can (and should) be completed first at the top and tasks that can (and should) be completed last at the bottom.**
+**Disclaimer: All tasks inside the iterations are ordered by timeline priority with tasks that can (and should) be completed first at the top and tasks that can (and should) be completed last at the bottom. In addition, each sub-task is given a priority rating from 1-3 where 1st priority means that no further steps can/should be taken until that sub-task is done, 2nd priority means that the task is necessary for that iteration and 3rd priority means that they should be done at the end when everything else is done. **
 
-### Iteration 1 (4 people, 2 weeks, estimated time: X hours, actual working time: )
+### Iteration 1 (4 people, 2 weeks, estimated time: 20 hours, actual working time: 22 hours). Deadline: 30/09/2024
 
-* **Setting up the GitHub repository and project for project management (Priority: Must-have, Estimated: 3 hours, Actual: hours)**
-  - Creating the repository and project (Estimated: 0.5 hours, Actual: hours)
-  - Creating necessary labels for both repository and project (Estimated: 1 hour, Actual: hours)
-  - Grouping the tasks into functional requirements, non-functional requirements and user-stories (Estimated: 0.5 hours, Actual: hours)
-  - Assigining the tasks to team members (Estimated: 0.5 hours, Actual: hours)
+* **Setting up the GitHub repository and project for project management (Priority: 1st Priority, Estimated: 2 hours, Actual: 3 hours)**
+  - Creating the repository and project (Estimated: 0.5 hours, Actual: 1 hour)
+  - Creating necessary labels for both repository and project (Estimated: 1 hour, Actual: 1 hour)
+  - Grouping the tasks into functional requirements, non-functional requirements and user-stories (Estimated: 0.5 hours, Actual: 0.5 hours)
+  - Assigining the tasks to team members (Estimated: 0.5 hours, Actual: 0.5 hours)
 
-* **Creating a Wiki/ReadMe File (Priority: Must-have, Estimated: 4 hours, Actual: hours)**
-  - Discussing and assigning roles for the project (Estimated: 0.5 hours, Actual: hours)
-  - Gathering and discussing necessary information on what to include in the Wiki (Estimated: 0.5 hours, Actual: hours)
-  - Writing the Product Vision (Estimated: 0.5 hours, Actual: hours)
-  - Discussing and explaining the work process (Estimated: 1 hour, Actual: hours)
-  - Writing the Scope (Estimated: 2 hours, Actual: hours)
+* **Creating a Wiki/ReadMe File (Priority: 1st Priority, Estimated: 4 hours, Actual: 5 hours)**
+  - Discussing and assigning roles for the project (Estimated: 0.5 hours, Actual: 0.5 hours)
+  - Gathering and discussing necessary information on what to include in the Wiki (Estimated: 0.5 hours, Actual: 1 hour)
+  - Writing the Product Vision (Estimated: 0.5 hours, Actual: 1 hour)
+  - Discussing and explaining the work process (Estimated: 1 hour, Actual: 1 hour)
+  - Writing the Scope (Estimated: 2 hours, Actual: 2 hours)
     
-* **Document at least 24 functional requirements (Priority: Must-have, Estimated: 8 hours, Actual: hours)**
-  - Initial exchange of information with the customer via email (Estimated: 0.5 hours, Actual: hours)
-  - First web-meeting with the customer (Estimated: 1 hour, Actual: hours)
-  - Discussing and writing the requirements with the team (Estimated: 6 hours, Actual: hours).
+* **Document at least 24 functional requirements (Priority: 1st Priority, Estimated: 8 hours, Actual: 8 hours)**
+  - Initial exchange of information with the customer via email (Estimated: 0.5 hours, Actual: 1 hour)
+  - First web-meeting with the customer (Estimated: 1 hour, Actual: 1 hour)
+  - Discussing and writing the requirements with the team (Estimated: 6 hours, Actual: 6 hours).
 
-* **Document at least 7 non-functional requirements (Priority: Must-have, Estimated: 4 hours, Actual: hours)**
-  - Initial exchange of information with the customer via email (Estimated: 0.5 hours, Actual: hours)
-  - First web-meeting with the customer (Estimated: 1 hour, Actual: hours)
-  - Discussing and writing the non-functional requirements with the team (Estimated: 2 hours, Actual: hours).
+* **Document at least 7 non-functional requirements (Priority: 1st Priority, Estimated: 4 hours, Actual: 4 hours)**
+  - Initial exchange of information with the customer via email (Estimated: 0.5 hours, Actual: 1 hours)
+  - First web-meeting with the customer (Estimated: 1 hour, Actual: 1 hours)
+  - Discussing and writing the non-functional requirements with the team (Estimated: 2 hours, Actual: 2 hours).
 
-* **Document at least 2 use cases (Priority: Must-have, Estimated: 2 hours, Actual: hours)**
-  - Analyzing the functional requirements and choosing 2 high-level functional requirements (Estimated: 0.5 hours, Actual: hours)
-  - Further detail the 2 high-level functional requirements (Estimated: 0.5 hours, Actual: hours)
-  - Writing them as a seperate entry into the Wiki (Estimated: 0.5 hours, Actual: hours)
+* **Document at least 2 use cases (Priority: 1st Priority, Estimated: 2 hours, Actual: 2 hours)**
+  - Analyzing the functional requirements and choosing 2 high-level functional requirements (Estimated: 0.5 hours, Actual: 0.5 hours)
+  - Further detail the 2 high-level functional requirements (Estimated: 0.5 hours, Actual: 0.5 hours)
+  - Writing them as a seperate entry into a document (http://tiny.cc/fywnzz) (Estimated: 0.5 hours, Actual: 0.5 hours)
 
 
-### Iteration 2 (4 people, 2 week, X hours)
+### Iteration 2 (4 people, 2 week, X hours). Deadline: 21/10/2024
 
-* **The functionality of the application covers at least one of the core use cases and is tested (Priority: X, Estimated: Y hours, Actual: Z hours)**
-* **Creation of Continuous Itegration system (Priority: X, Estimated: Y hours, Actual: Z hours)**
-* **At least 75% of the requirements identified and marked as in the scope of the work delivered at the end of the course are detailed in the form of use cases (Priority: X, Estimated: Y hours, Actual: Z hours)**
-* **The application UI has been prototyped using wireframes or mockups and there are links from the detailed requirements to the corresponding UI screens (Priority: X, Estimated: Y hours, Actual: Z hours)**
-* **Release notes for this iteration are present (Priority: X, Estimated: Y hours, Actual: Z hours)**
-* **Updates to Wiki (Priority: X, Estimated: Y hours, Actual: Z hours)**
+* **Creation of Continuous Itegration system (Priority: 1st Priority, Estimated: 4 hours, Actual: Y hours)**
+  - Researching about Continuous Integration. (Estimated: 1 hour, Actual: Y hours)
+  - Setting up the Actions tab in the Github Repo. (Estimated: 2 hours, Actual: Y hours)
+  - Testing the set-up and clearing any errors that might appear. (Estimated: 2 hours, Actual: Y hours)
+    
+* **The functionality of the application covers at least one of the core use cases and is tested (Priority: 1st Priority, Estimated: 9 hours, Actual: Y hours)**
+  - Choosing the core use case and analysing what are the requirements to deliver that functionality. (Estimated: 1 hour, Actual: Y hours)
+  - Planning and learning how to program the chosen functionality. (Estimated: 4 hours, Actual: Y hours)
+  - Testing that functionality. (Estimated: 2 hours, Actual: Y hours)
+  - Fixing any bugs that appear. (Estimated: 1 hour, Actual: Y hours)
+  - Demo to the customer. (Estimated: 1 hour, Actual: Y hours)
+    
+* **At least 75% of the requirements identified and marked as in the scope of the work delivered at the end of the course are detailed in the form of use cases (Priority: 2nd Priority, Estimated: 7 hours, Actual: Y hours)**
+ -  Discussing the current requirements with the customer. (Estimated: 0.5 hours, Actual: Y hours)
+ -  Perfecting the existing and constructing new requirements based on the feedback from the customer. (Estimated: 1 hour, Actual: Y hours)
+ -  Converting 75% of the requirements into user cases. (Estimated: 3 hours, Actual: Y hours)
+ -  Write them into the Wiki. (Estimated: 2 hours, Actual: Y hours)
+   
+* **The application UI has been prototyped using wireframes or mockups and there are links from the detailed requirements to the corresponding UI screens (Priority: 2nd Priority, Estimated: 6 hours, Actual: Y hours)**
+  - Discussing and analysing the customer wishes in regards to the UI. (Estimated: 1 hour, Actual: Y hours)
+  - Planning how the UI should look. (Estimated: 1 hour, Actual: Y hours)
+  - Composing wireframes/mockups. (Estimated: 3 hours, Actual: Y hours)
+  - Linking the detailed requirements to the UI screens. (Estimated: 1 hour, Actual: Y hours)
+    
+* **Release notes for this iteration are present (Priority: 3rd Priority, Estimated: 2 hours, Actual: Y hours)**
+  - Analysing all the done work. (Estimated: 1 hour, Actual: Y hours)
+  - Writing the release notes. (Estimated: 1 hours, Actual: Y hours)
+    
+* **Updates to Wiki (Priority: 3rd Priority, Estimated: 1 hours, Actual: Y hours)**
+  - Updating the Wiki to keep it up to date with the necessary information. (Estimated: 1 hours, Actual: Y hours)
 
-### Iteration 3 (4 people, 2 week, X hours)
+### Iteration 3 (4 people, 2 week, X hours). Deadline: 18/11/2024
 
 * **The functionality in the application covers all core use cases, is tested and works**
 * **Creation of automated tests**
@@ -68,7 +99,7 @@
 * **Finalization of all requirements and creation of UI prototypes**
 * **Updates to Wiki**
 
-### Iteration 4 (4 people, 2 week, X hours)
+### Iteration 4 (4 people, 2 week, X hours). Deadline: 13/12/2024
 
 * **The functionality in the application covers all requirements defined by functional and non-functional requirements. They are tested and working.**
 * **Automated testing for new functionalities.**
@@ -78,10 +109,6 @@
 * **Response to the peer-review.**
 * **Updates to Wiki**
 
-## Stack
-* Database: PostgreSQL
-* Back-end: Python
-* Front-end: PHP/React.js
 
 ## About the team
 ### Members
@@ -112,4 +139,8 @@ On a day-to-day basis the communication takes place in a groupchat. Every week, 
 * What is the definition of DONE on a task?
   - A DONE task is something that needs no further work in the current iteration. It must also be confirmed by other team members through review.
 
+## Stack
+* Database: PostgreSQL
+* Back-end: Python
+* Front-end: PHP/React.js
 
