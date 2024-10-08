@@ -1,2 +1,5 @@
 def test_dummy():
-  pass
+  print("This is a dummy file")
+
+
+test_dummy()
