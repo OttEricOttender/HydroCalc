@@ -115,8 +115,8 @@
 ### Members
 * Ott Eric Ottender (Team lead, Lead Requirements Engineer, Programmer, Tester)
 * Lauri Kuresoo (Lead Tester, Requirements Engineer, Programmer)
-* Robert Ivask (Lead Programmer, Requirements Engineer, Programmer)
-* Rasmus Meos (Programmer, Requirements Engineer, Programmer)
+* Robert Ivask (Lead Programmer, Requirements Engineer, Tester)
+* Rasmus Meos (Programmer, Requirements Engineer, Tester)
 
 ### Communication
 On a day-to-day basis the communication takes place in a groupchat. Every week, we might briefly meet as a team via Google Meets or Zoom to further discuss topics which can't be or might be too lenghty to resolve in the groupchat. As for the client, we will keep in contact with the client on a weekly basis via emails clarifying the questions each side might come up with. Again, when there's a need for a bigger and longer discussion, we will meet via Google Meets or Zoom.
