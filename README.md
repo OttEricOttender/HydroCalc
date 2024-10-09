@@ -12,7 +12,7 @@
 
 ### Primary Questions
 * **What is the product to be developed? What type of system it will be (e.g. a Web API, a Web frontend, a mobile app, a desktop app?) and what will the system allow its users to achieve?**
-  - The product will be a web application which will calculate necessary drainage-related parameters like catchment area size and river system length at the user's desired point to automate the work of environmental scientists, landscape planners and hydraulic engineers and make it more percise.
+  - The product will be a web application which will calculate necessary drainage-related parameters like catchment area size and river system length at the user's desired point to automate the work of environmental scientists, landscape planners and hydraulic engineers and make it more percise. This will be the first of it's kind in Estonia.
 * **What makes this product different from competing products?**
   - It will differ from other competing products by being Estonia specific and automatically calculating the desired parameters instead of making the user calculate them themself.
 * **Why should customers buy this product? What problem it will solve or what opportunity is it meant to exploit?** 
@@ -62,12 +62,12 @@
 ### Iteration 2 (4 people, 2 week, X hours). Deadline: 21/10/2024
 
 * **Creation of Continuous Itegration system (Priority: 1st Priority, Estimated: 4 hours, Actual: Y hours)**
-  - Researching about Continuous Integration. (Estimated: 1 hour, Actual: Y hours)
-  - Setting up the Actions tab in the Github Repo. (Estimated: 2 hours, Actual: Y hours)
+  - Researching about Continuous Integration. (Estimated: 1 hour, Actual: 2 hours)
+  - Setting up the Actions tab in the Github Repo. (Estimated: 2 hours, Actual: 2 hours)
   - Testing the set-up and clearing any errors that might appear. (Estimated: 2 hours, Actual: Y hours)
     
 * **The functionality of the application covers at least one of the core use cases and is tested (Priority: 1st Priority, Estimated: 9 hours, Actual: Y hours)**
-  - Choosing the core use case and analysing what are the requirements to deliver that functionality. (Estimated: 1 hour, Actual: Y hours)
+  - Choosing the core use case and analysing what are the requirements to deliver that functionality. (Estimated: 1 hour, Actual: 1 hours) - #UC1
   - Planning and learning how to program the chosen functionality. (Estimated: 4 hours, Actual: Y hours)
   - Testing that functionality. (Estimated: 2 hours, Actual: Y hours)
   - Fixing any bugs that appear. (Estimated: 1 hour, Actual: Y hours)
@@ -126,7 +126,7 @@ On a day-to-day basis the communication takes place in a groupchat. Every week, 
   - The customer has a very clear vision of what they wish to achieve with our project. They already use the tools that the program should utilize in every day working. Our job is to automate the whole process so that they don't have to hop between multiple different databases and information sources to determine their desired hydrological parameters. 
 
 * How do you determine that the customer is accepting your solution proposal?
-  - Before starting to implement any further moves, we will coordinate it witht he customer. They know how to use the databases necessary for the project's work so their explanation serves as approval and acceptance of how the problem should be solved.
+  - Before starting to implement any further moves, we will coordinate it witht he customer. They know how to use the databases necessary for the project's work. Once they have clarified and we have made a plan on how to solve the issue at hand, we will present it to them and ask if they accept it or not. If yes, we will start implementing it. If not, we will analyise their feedback and come up with another solution which we will present them again.
     
 * How you are internally going to build the accepted solution (who assigns the tasks, who is going to implement it, will the tests be written, will code be reviewed, who is going to verify, who is doing the validation, etc.)?
   - The tasks will be assigned by the current split’s lead. They will also do most of the work during that split (75 hours) with other team members supporting him with 50 hours, 50 hours and 25 hours respectively. These hours will shift depending on the split so that everybody would equal at least 150 hours by the end of course. The code will be reviewed, verified and validated also primarily by the split lead, assisted by other team members, who might have a fresher look at the work that was done during that iteration/split. How testing will work is up for the testing lead to decide.
