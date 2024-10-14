@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        />
+
+        <title>Leaflet geoserver</title>
+
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            #map {
+                width: 100%;
+                height: 100vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+    </body>
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="lib/L.Geoserver.js"></script>
+
+<script>
+    var map = L.map("map").setView([58.69422, 25.90754], 9);
+
+    // OpenStreetMap as the base map
+    var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // Overlay map data from the GeoServer WMS
+    var wms = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
+        layers: `demo:e_303_haritav_maa_a`,
+        transparent: true,
+    }).addTo(map);
+</script>
