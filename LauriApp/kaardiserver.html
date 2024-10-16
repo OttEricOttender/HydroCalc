@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="et">
+	<head>
+		<meta charset="utf-8">
+		<title>Katastriüksuse asukohaskeem</title>
+
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js" type="text/javascript"></script>
+		<script src="./static/js/leaflet/Proj4Leaflet/proj4Leaflet.js" type="text/javascript"></script>
+		<script src="./static/js/leaflet/LeafletSearch/leaflet-search.min.js" type="text/javascript"></script>
+		<script src="./static/js/leaflet/LeafletSidebar/L.Control.Sidebar.js" type="text/javascript"></script>
+		<script src="./static/js/addon/leaflet-Singletile.js" type="text/javascript"></script>
+		<script src="./static/js/addon/crossdomain/jquery.xdomainajax.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/x2js/1.2.0/xml2json.min.js" type="text/javascript" ></script>
+		<script src="./static/js/addon/leaflet-FeatureInfo.js" type="text/javascript"></script>
+		<script src="./static/js/addon/leaflet-ToggleButton.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="map">
+			<div id="map-sidebar">
+				<div id="map-sidebar-featureinfo">
+				</div>
+			</div>
+		</div>
+		<script>
+			// Aluskaardi tailid on L-EST'97s. seadistame kaardi.
+			var crs = new L.Proj.CRS(
+					'EPSG:3301',
+					'+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+					{
+						resolutions: [4000,2000,1000,500,250,125,62.5,31.25,15.625,7.8125,3.90625,1.953125,0.9765625,0.48828125,0.244140625,0.1220703125,0.06103515625,0.030517578125,0.0152587890625,0.00762939453125,0.003814697265625],
+						transformation: new L.Transformation(1, -40500, -1, 7017000.000000),
+						//origin: [40500, 5993000.000000],
+						bounds: L.bounds(L.point(40500, 5993000.000000), L.point(1064500.000000, 7017000.000000))
+					}
+				),
+				//Kaart ise, mis läheb div.id = "map" elementi
+				map = L.map( //L.map(
+					'map', {
+						crs: crs,
+						center: L.latLng(58.57384156284465, 25.424),
+						zoom:3,
+						minZoom:0,
+						maxZoom:20,
+						maxBounds: L.latLngBounds([[56.90,20.30],[60.508268, 29.699962]]),
+					}
+				);
+				var ortotile = L.tileLayer(
+					'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{y}.png', {
+						minZoom:0,
+						maxZoom: 13,
+						continuousWorld: false,
+						noWrap: false,
+						tms: true,
+						attribution: 'Ortofoto: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				ortowms = L.tileLayer.wms(
+					'http://kaart.maaamet.ee/wms/fotokaart', {
+						layers: 'EESTIFOTO',
+						minZoom: 14,
+						maxZoom: 20,
+						version: '1.1.1',
+						attribution : 'Ortofoto: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				orto = L.layerGroup([ortotile, ortowms]),
+
+				kaarttile = L.tileLayer(
+					'http://tiles.maaamet.ee/tm/s/1.0.0/kaart/{z}/{x}/{y}.png', {
+						minZoom:0,
+						maxZoom: 14,
+						continuousWorld: false,
+						noWrap: false,
+						tms: true,
+						attribution: 'Aluskaart/Põhikaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				kaartwms = L.tileLayer.wms(
+					'http://kaart.maaamet.ee/wms/kaart', {
+						continuousWorld : false,
+						tms: true,
+						layers: 'CORINE,BAASKAART,KAART24,HALDUSPIIRID,TEED,KYLAD,KAART24L',
+						minZoom: 14,
+						maxZoom: 20,
+						version: '1.1.1',
+						attribution : 'Aluskaart/Põhikaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				kaart = L.layerGroup([kaarttile, kaartwms]).addTo(map),
+
+				hybrid_orthotile = L.tileLayer(
+					'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{y}.png', {
+						minZoom : 0,
+						maxZoom : 13,
+						continuousWorld : false,
+						tms : true,
+						attribution : 'Ortofoto/Hübriidkaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				hybrid_texttile = L.tileLayer(
+					'http://tiles.maaamet.ee/tm/s/1.0.0/hybriid/{z}/{x}/{y}.png', {
+						minZoom : 0,
+						maxZoom : 13,
+						continuousWorld : false,
+						tms : true,
+						attribution : 'Ortofoto/Hübriidkaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				hybridtile = L.layerGroup([hybrid_orthotile, hybrid_texttile]),
+				hybrid_orthowms = L.tileLayer.wms(
+					'http://kaart.maaamet.ee/wms/fotokaart', {
+						layers: 'EESTIFOTO',
+						minZoom: 14,
+						maxZoom: 20,
+						version: '1.1.1',
+						attribution : 'Ortofoto/Hübriidkaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				hybrid_textwms = L.tileLayer.wms(
+					'http://kaart.maaamet.ee/wms/fotokaart', {
+						layers: 'HYBRID',
+						transparent: true,
+						format: 'image/png',
+						minZoom: 14,
+						maxZoom: 20,
+						version: '1.1.1',
+						attribution : 'Ortofoto/Hübriidkaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				),
+				hybridwms = L.layerGroup([hybrid_orthowms, hybrid_textwms]),
+				hybrid = L.layerGroup([hybridtile, hybridwms]),
+
+				kataster = new L.SingleTileWMSLayer(
+					'http://kaart.maaamet.ee/wms/alus?', {
+						layers:'TOPOYKSUS_6569,TOPOYKSUS_6571',
+						transparent:true,
+						format:'image/png',
+						attribution: 'Katastriüksused: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				).addTo(map),
+
+
+				hiLightLayer = L.layerGroup().addTo(map),
+				baselayers = {"Ortofoto":orto, "Kaart":kaart, "Hübriidkaart":hybrid},
+				overlays = {"Katastriüksused":kataster}
+
+				featureinfo = L.featureInfo('http://kaart.maaamet.ee/wms/alus?');
+
+				L.control.layers(baselayers, overlays).addTo(map);
+
+				map.on('click', function(e) {
+					/**Klikk kaardil teeb WMSi GetFeatureInfo päringu kui tsuum on
+					* õiges vahemikus. Kihte pärime nähtavuse järgi - millel
+					* nähtavus sees, see läheb päringusse.
+					*/
+					var fi = getFeatureInfo(e.containerPoint, formatFeatureInfo);
+				});
+
+			function getFeatureInfo(layerPoint, formatFunc) { //L.LayerPoint
+				/** Teostab GetFeatureInfo päringu wms teenusesse
+				* sisendiks on selle kaardi piksli koordinaat, millel
+				* klikiti. Muu vajalik küsitakse kaardi käest.
+				*/
+				var _size = map.getSize(),
+					boundsMin = crs.project(map.getBounds()._southWest),
+					boundsMax = crs.project(map.getBounds()._northEast),
+					_bbox = [
+						boundsMin.x, boundsMin.y,
+						boundsMax.x, boundsMax.y];
+					_layers = [];
+				return featureinfo.getFeatureInfo({
+					i:layerPoint.x,
+					j:layerPoint.y,
+					info_format: 'application/vnd.ogc.gml',
+					format:'image/png',
+					query_layers: 'TOPOYKSUS_6569',
+					layers: 'TOPOYKSUS_6569',
+					width:_size.x,
+					height:_size.y,
+					bbox:_bbox.toString(),
+					srs:'EPSG:3301'},
+					[],
+					formatFunc
+				);
+			}
+
+			function formatFeatureInfo(fi) { // Object
+				/** Lisame featureInfo tabelid kaardile.
+				*/
+				var els = document.getElementsByClassName('leaflet-feature-info'),
+					cnt = els.length;
+				for (var i = 0; i < cnt; i++) {
+					var el = els[i],
+						parent = el.parentElement;
+					parent.removeChild(el);
+				}
+				var bbox = fi.bbox;
+				if (typeof bbox === 'undefined') {
+					return;
+				}
+				var container = L.DomUtil.create('div', 'leaflet-feature-info'),
+				    content = fi.content;
+					document.getElementById('map-sidebar-featureinfo').appendChild(container),
+					bboxStr = fi.bbox.box.coordinates;
+				for (var i in content) {
+					var _fi = content[i],
+						h, c;
+					h = L.DomUtil.create('h3', 'leaflet-feature-info-title', container);
+					h.innerHTML = i;
+					container.appendChild(h);
+					c = L.DomUtil.create('div', 'leaflet-feature-info-tab', container);
+					c.innerHTML = _fi;
+					container.appendChild(c);
+				}
+				var coords = bboxStr.split(' '),
+					sw = coords[0].split(','),
+					ne = coords[1].split(','),
+					bounds = [],
+					_crs = map.options.crs;
+				for (var i in sw) {
+					sw[i] = parseFloat(sw[i]);
+				}
+				for (var i in ne) {
+					ne[i] = parseFloat(ne[i]);
+				}
+				bounds.push(_crs.projection.unproject(L.point(sw[0], sw[1])));
+				bounds.push(_crs.projection.unproject(L.point(ne[0], ne[1])));
+				hiLightLayer.clearLayers();
+				sideBar.show();
+
+				map.fitBounds(bounds);
+				return container;
+			}
+
+			function filterAddressJSON(rawjson) {
+				/** Render map data from ADS address search result JSON.
+				*
+				* @param rawjson (Object) - search result from xGIS
+				* 	geocoding service.
+				*/
+				var json = {},
+					key, bl, disp = [],
+					featureMembers, featureMember, en,
+					_crs = map.options.crs;
+				if (rawjson && rawjson.hasOwnProperty('addresses')) {
+					featureMembers = rawjson.addresses;
+					for (var i in featureMembers) {
+						// An address (a "featureMember") can be of only one type,
+						// so we can do this regardless of it's type value:
+						Object.keys(featureMembers[i]).forEach(
+							function(featureType) {
+								if (featureMembers[i].hasOwnProperty('pikkaadress')) {
+									// we got an exact match
+									featureMember = featureMembers[i]
+								} else {
+									featureMember = featureMembers[i][featureType]
+								}
+								key = featureMember.pikkaadress
+								if (!json.hasOwnProperty(key)) {
+									en = L.point(parseFloat(featureMember.viitepunkt_x), parseFloat(featureMember.viitepunkt_y));
+									bl = _crs.projection.unproject(en);
+									json[ key ] = bl;
+								}
+							}
+						);
+					}
+				}
+				return json;
+			}
+
+			function toggleSidebar() {
+				/**Function for controlling the state (on/off) of the
+				* filter sidebar and filter layer.
+				*/
+				sideBar.toggle();
+			}
+
+			// Search Control for geocoding.
+			var searchControl = new L.Control.Search({
+				callData : function(inputAddress, callResponse) {
+					$.ajax({
+						url: 'http://inaadress.maaamet.ee/inaadress/gazetteer',
+						type: 'GET',
+						data: {
+							address: inputAddress,
+							results: 10,
+							features:'KATASTRIYKSUS'},
+						dataType: 'jsonp',
+						success: function(json) {
+							callResponse(json);
+						}
+					})
+				},
+				filterJSON: filterAddressJSON,
+				autoCollapse: true,
+				text: 'Otsi aadressi ...',
+				zoom: 12,
+				textCancel: 'Tühista',
+				textErr: 'Ei leidnud aadressi',
+				markerLocation: true}
+			).addTo(map);
+
+			var sideBar = L.control.sidebar(
+				'map-sidebar', {
+					position:'right',
+					closeButton: false
+				}
+			).addTo(map);
+
+			// Button for opening the sidebar
+			var sideBarButton = L.control.toggleButton({
+				position:'topleft',
+				toggleFunction:toggleSidebar,
+				onTitle: 'Sulge paneel',
+				offTitle: 'Ava paneel',
+				onText: '<',
+				offText: '>'
+			}).addTo(map);
+		</script>
+	</body>
+</html>

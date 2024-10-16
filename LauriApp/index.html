@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css">
+   	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js" type="text/javascript"></script>
+    <script src="./js/leaflet/Proj4Leaflet/proj4Leaflet.js" type="text/javascript"></script>
+    <script src="./js/leaflet/LeafletSearch/leaflet-search.min.js" type="text/javascript"></script>
+    <script src="./js/leaflet/LeafletSidebar/L.Control.Sidebar.js" type="text/javascript"></script>
+    <script src="./js/addon/leaflet-Singletile.js" type="text/javascript"></script>
+    <script src="./js/addon/crossdomain/jquery.xdomainajax.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x2js/1.2.0/xml2json.min.js" type="text/javascript" ></script>
+    <script src="./js/addon/leaflet-FeatureInfo.js" type="text/javascript"></script>
+    <script src="./js/addon/leaflet-ToggleButton.js" type="text/javascript"></script>
+    <script src="./js/leaflet/BetterWMS/L.TileLayer.BetterWMS.js"></script>
+    <style>
+      body{
+        display: flex;
+
+      }
+
+      #information{
+        flex: 2;
+      }
+      #map {
+        flex: 5;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="information"> </div>
+    <div id="map"></div>
+    <script>
+      var crs = new L.Proj.CRS(
+					'EPSG:3301',
+					'+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+					{
+						resolutions: [4000,2000,1000,500,250,125,62.5,31.25,15.625,7.8125,3.90625,1.953125,0.9765625,0.48828125,0.244140625,0.1220703125,0.06103515625,0.030517578125,0.0152587890625,0.00762939453125,0.003814697265625],
+						transformation: new L.Transformation(1, -40500, -1, 7017000.000000),
+						//origin: [40500, 5993000.000000],
+						bounds: L.bounds(L.point(40500, 5993000.000000), L.point(1064500.000000, 7017000.000000))
+					}
+				);
+
+      var map = L.map(
+					'map', {
+						crs: crs,
+						center: L.latLng(58.57384156284465, 25.424),
+						zoom: 3,
+						minZoom:0,
+						maxZoom:20,
+						maxBounds: L.latLngBounds([[56.90,20.30],[60.508268, 29.699962]]),
+					}
+				);
+
+     var kaarttile = L.tileLayer(
+					'http://tiles.maaamet.ee/tm/s/1.0.0/kaart/{z}/{x}/{y}.png', {
+						minZoom:0,
+						maxZoom: 14,
+						continuousWorld: false,
+						noWrap: false,
+						tms: true,
+						attribution: 'Aluskaart/Põhikaart: <a href="http://www.maaamet.ee" target="_blank">Maa-Amet</a>'
+					}
+				);
+
+      var kaartwms = L.tileLayer.wms(
+					'http://kaart.maaamet.ee/wms/kaart', {
+						continuousWorld : false,
+						tms: true,
+						layers: 'CORINE,BAASKAART,KAART24,HALDUSPIIRID,TEED,KYLAD,KAART24L',
+						minZoom: 14,
+						maxZoom: 20,
+						version: '1.1.1'
+					}
+				);
+
+
+      kaart = L.layerGroup([kaarttile, kaartwms]).addTo(map);
+
+      kataster = L.tileLayer.betterWms('https://gsavalik.envir.ee/geoserver/maaamet/wms?', {
+              layers: 'maaamet:ky_kehtiv',
+              transparent: true,
+              format: 'image/png',
+              tiled: false,  // This is the key for single-tile WMS
+				}).addTo(map);
+
+      var selected
+      basins = L.tileLayer.wms(
+					'https://gsavalik.envir.ee/geoserver/eelis/ows?', {
+						layers: 'eelis:valgla_vooluvesi',
+						 transparent: true,
+                          format: 'image/png',
+                          tiled: false,  // T
+            }).addTo(map);
+
+
+      console.log(basins);
+      hiLightLayer = L.layerGroup().addTo(map),
+      baselayers = {"Kaart":kaart/*, "Hübriidkaart":hybrid,"Ortofoto":orto, */},
+      overlays = {"Katastriüksused":kataster, "valgalad": basins}
+
+      //featureinfo = L.featureInfo('https://gsavalik.envir.ee/geoserver/maaamet/wms?');
+
+      L.control.layers(baselayers, overlays).addTo(map);
+
+    </script>
+  </body>
+</html>
