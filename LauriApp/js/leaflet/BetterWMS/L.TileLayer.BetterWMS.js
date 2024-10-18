@@ -42,7 +42,7 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
         params = {
           request: 'GetFeatureInfo',
           service: 'WMS',
-          srs: 'EPSG:4326',
+          srs: 'EPSG:3301',
           styles: this.wmsParams.styles,
           transparent: this.wmsParams.transparent,
           version: this.wmsParams.version,
