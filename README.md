@@ -45,7 +45,7 @@
   - Writing them as a seperate entry into a document (http://tiny.cc/fywnzz) (Estimated: 0.5 hours, Actual: 0.5 hours)
 
 
-### Iteration 2 (4 people, 2 week, X hours). Deadline: 21/10/2024
+### Iteration 2 (4 people, 2 weeks, X hours). Deadline: 21/10/2024
 
 * **Creation of Continuous Itegration system (Priority: 1st Priority, Estimated: 4 hours, Actual: Y hours) [Issue #10](https://github.com/OttEricOttender/HydroCalc/issues/10)**
   - Researching about Continuous Integration. (Estimated: 1 hour, Actual: 2 hours)
@@ -78,23 +78,91 @@
 * **Updates to Wiki (Priority: 3rd Priority, Estimated: 1 hours, Actual: Y hours) [Issue #18](https://github.com/OttEricOttender/HydroCalc/issues/18)**
   - Updating the Wiki to keep it up to date with the necessary information. (Estimated: 1 hours, Actual: Y hours)
 
-### Iteration 3 (4 people, 2 week, X hours). Deadline: 18/11/2024
+### Iteration 3 (4 people, 3 weeks, X hours). Deadline: 18/11/2024
+**Goal**: The goal of this iteration is to (i) Develop all the core use cases, (ii) Create automated tests and (iii) Upgrade CI environment
 
-* **The functionality in the application covers all core use cases, is tested and works**
-* **Creation of automated tests**
-* **Addition of automated tests to CI**
-* **Finalization of all requirements and creation of UI prototypes**
-* **Updates to Wiki**
+**Use Cases to be Implemented:**
+  * [Search by Coordinates](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=81492318)
+    - As a Hydrological Engineer I want to search for a spot on the map by entering known coordinates.
+  * [Search by Point](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83542504)
+    - As a Hydrological Engineer I want to search for data about a spot on the map by clicking on the desired point on the map.
+  * [Display Drainage Basin](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83542603)
+    - As a Hydrological Engineer I want to see the nearest drainage basin and any land improvements to the chosen point.
+  * [Display River Network](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83549736)
+    - As a Hydrological Engineer I want to see the main river and tributaries more clearly.
 
-### Iteration 4 (4 people, 2 week, X hours). Deadline: 13/12/2024
+**Non-functional Requirements to be Implemented:**
+  * As a system administrator, I want the application to be available 99.0% of the time to ensure constant access for hydrological engineers.
+  * As a user, I want the application to follow basic accessibility guidelines, such as providing alt text for images and keyboard navigation support, to ensure usability for all users (including those with disabilities).
+      
+**Tasks:**
+  * Develop the search bar functionality for the map.
+  * Develop a pin for marking a spot on the map.
+  * Incorporate the databases holding the data of the Drainage Basins.
+  * Save the Drainage Basin data into our own database.
+  * Display the Drainage Basins overlay on the map.
+  * Incorporate the databases holding the data of the land improvements.
+  * Save the Land Improvement data into our own database.
+  * Display the Land Improvements overlay on the map.
+  * Incorporate the databases holding the data of the rivers networks.
+  * Save the River Network data into our own database.
+  * Display the River Networks overlay on the map.
+    
+**Testing:**
+  * Conduct tests for **Search By Coordinates**
+  * Conduct tests for **Search By Point**
+  * Conduct tests for **Display Drainage Basin**
+  * Conduct tests for **Display River Network**
+  * Incorporate these tests into the CI environment.
+  
+**Deliverables:**
+  * Functional **Search By Coordinates** module (UI).
+  * Functional **Search By Point** module (UI).
+  * Functional **Display Drainage Basin** module (UI + database).
+  * Functional **Display River Network** module (UI + database).
+  * Testing reports for all developed functionalities.
+  * Working CI environment.
 
-* **The functionality in the application covers all requirements defined by functional and non-functional requirements. They are tested and working.**
-* **Automated testing for new functionalities.**
-* **Addition of more automated tests to CI**
-* **Conduct internal acceptance testing prior to the release.**
-* **Verification of non-functional requirements**
-* **Response to the peer-review.**
-* **Updates to Wiki**
+
+  
+### Iteration 4 (4 people, 4 weeks, X hours). Deadline: 13/12/2024
+**Goal**: The goal of this iteration is to (i) Fully develop **all** use cases and non-functional requirements, (ii) Create automated tests for all functionalities and (iii) Upgrade CI environment.
+
+**Use Cases to be Implemented:**
+  * [Information Tab](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83542413)
+    - As a Hydrological Engineer, I want to get all the necessary parameters about their chosen point in a tab next to the map.
+  * [Display Various Layers](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83549647)
+    - As a Hydrological Engineer, I want to display different environmental layers.
+  * [Export Hydrological Data](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83549802)
+    - As a Hydrological Engineer, I want to export the parameters and calculations about the chosen point
+  * [Display Search History](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83549870)
+    - As a Hydrological Engineer, I want to quickly access previous data points without re-entering coordinates.
+  * [Tutorial](https://github.com/users/OttEricOttender/projects/1/views/1?pane=issue&itemId=83550095)
+    - As a Hydrological Engineer, I want to learn how the site works.
+
+**Non-functional requirements to be Implemented:**
+  * As a system user, I want the web application to respond within 2 seconds when displaying search results
+  * As a system user, I want the application to use HTTPS for secure communication with data sources to ensure its security.
+  * As a system administrator, I want the system to handle up to 500 concurrent users without degrading performance
+
+**Tasks:**
+  * Detailed tasks for the functionalities will be listed after Iteration 3
+  * Response to the peer-review.
+
+**Testing**
+  * Automated testing for new functionalities.
+  * Addition of more automated tests to CI.
+  * Conduct internal acceptance testing prior to the release.
+
+**Deliverables**
+  * Functional **Information Tab** module (UI + backend + database).
+  * Functional **Display Various Layers** module (UI + database).
+  * Functional **Export Hydrological Data** module (UI).
+  * Functional **Display Search History** module (UI + database).
+  * Functional **Tutorial** module (UI).
+  * Testing reports for all developed functionalities.
+  * Working CI environment.
+  * Fully working application.
 
 
 ## About the team
@@ -121,10 +189,10 @@ On a day-to-day basis the communication takes place in a groupchat. Every week, 
   - A function or an element of the application is ready to be delivered and demonstrated to the customer when the function or element has no errors or 1-2 minor errors which do not alter the application in a significant manner and may not be visible unless specifically tested for. Regardless of the visibility, it will still be communicated to the customer and fixed at the earliest possibility.
 
 * How do you gather feedback from the customer and/or end users?
-  - Feedback will be gathered by asking for the client’s opinion after a demo session or an improvement in the project’s work. After the customer has given the approval to seek people outside of the development team and customer team to test the application, the feedback will be collected via a survey. This is subject to change depending on the customer’s and testing lead’s wishes.
- 
+  - Feedback will be gathered by asking for the client’s opinion after a demo session or an improvement in the project’s work. After the customer has given the approval to seek people outside of the development team and customer team to test the application, the feedback will be collected by asking a series of questions about the usability and functionality of the program.
+    
 * What is the definition of DONE on a task?
-  - A DONE task is something that needs no further work in the current iteration. It must also be confirmed by other team members through review.
+  - A DONE task is something that has been (i) planned and discussed with the customer, (ii) planned and discussed with the team, (iii) developed into a working functionality, (iv) tested by both a physical user and automated tests (v) fixed of any bugs that have appeared and (vi) demoed to the customer.
 
 ## Stack
 * Database: PostgreSQL
