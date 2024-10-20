@@ -47,7 +47,7 @@
   - Writing them as a seperate entry into a document (http://tiny.cc/fywnzz) (Estimated: 0.5 hours, Actual: 0.5 hours)
 
 
-### Iteration 2 (4 people, 2 weeks, X hours). Deadline: 21/10/2024
+### Iteration 2 (4 people, 3 weeks, 37 hours). Deadline: 21/10/2024
 
 * **Creation of Continuous Itegration system (Priority: 1st Priority, Estimated: 5 hours, Actual: 8 hours) [Issue #10](https://github.com/OttEricOttender/HydroCalc/issues/10)**
   - Researching about Continuous Integration. (Estimated: 1 hour, Actual: 2 hours)
@@ -61,11 +61,11 @@
   - Fixing any bugs that appear. (Estimated: 1 hour, Actual: 2 hours)
   - Demo to the customer. (Estimated: 1 hour, Actual: 1 hours) [Issue #14](https://github.com/OttEricOttender/HydroCalc/issues/14)
     
-* **At least 75% of the requirements identified and marked as in the scope of the work delivered at the end of the course are detailed in the form of use cases (Priority: 2nd Priority, Estimated: 7 hours, Actual: Y hours) [Issue #15](https://github.com/OttEricOttender/HydroCalc/issues/15)**
+* **At least 75% of the requirements identified and marked as in the scope of the work delivered at the end of the course are detailed in the form of use cases (Priority: 2nd Priority, Estimated: 7 hours, Actual: 7 hours) [Issue #15](https://github.com/OttEricOttender/HydroCalc/issues/15)**
   -  Discussing the current requirements with the customer. (Estimated: 0.5 hours, Actual: 1 hours)
   -  Perfecting the existing and constructing new requirements based on the feedback from the customer. (Estimated: 1 hour, Actual: 1 hours)
   -  Converting 75% of the requirements into user cases. (Estimated: 3 hours, Actual: 3 hours)
-  -  Write them into the Wiki. (Estimated: 2 hours, Actual: Y hours)
+  -  Write them into the Wiki. (Estimated: 2 hours, Actual: 2 hours)
    
 * **The application UI has been prototyped using wireframes or mockups and there are links from the detailed requirements to the corresponding UI screens (Priority: 2nd Priority, Estimated: 6 hours, Actual: 7 hours) [Issue #16](https://github.com/OttEricOttender/HydroCalc/issues/16)**
   - Discussing and analysing the customer wishes in regards to the UI. (Estimated: 1 hour, Actual: 1 hours)
@@ -73,9 +73,9 @@
   - Composing wireframes/mockups. (Estimated: 3 hours, Actual: 4 hours)
   - Linking the detailed requirements to the UI screens. (Estimated: 1 hour, Actual: 0.5 hours)
     
-* **Release notes for this iteration are present (Priority: 3rd Priority, Estimated: 2 hours, Actual: Y hours) [Issue #17](https://github.com/OttEricOttender/HydroCalc/issues/17)**
-  - Analysing all the done work. (Estimated: 1 hour, Actual: Y hours)
-  - Writing the release notes. (Estimated: 1 hours, Actual: Y hours)
+* **Release notes for this iteration are present (Priority: 3rd Priority, Estimated: 2 hours, Actual: 2 hours) [Issue #17](https://github.com/OttEricOttender/HydroCalc/issues/17)**
+  - Analysing all the done work. (Estimated: 1 hour, Actual: 1 hours)
+  - Writing the release notes. (Estimated: 1 hours, Actual: 1 hours)
     
 * **Updates to Wiki (Priority: 3rd Priority, Estimated: 1 hours, Actual: 2 hours) [Issue #18](https://github.com/OttEricOttender/HydroCalc/issues/18)**
   - Updating the Wiki to keep it up to date with the necessary information. (Estimated: 1 hours, Actual: 2 hours)
