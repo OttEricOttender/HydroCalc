@@ -1,18 +1,20 @@
 # Hydrological Parameters Calculator
 
-## How to navigate our repo for Iteration 1:
-* Product vision, project plan and scope are all written below.
-* Functional requirements, non-functional requirements and user cases can be found in Projects -> System Requirements.
-* Priority groupings for the requirements can be accessed by clicking on the "Priority board" tab.
-* The detailed user cases can be found from this [link.](http://tiny.cc/fywnzz)
-* Issue tracker is under "Issues" tab.
-* Notes from the first customer meeting can be found [here.](https://docs.google.com/document/d/1xm6LNthF30PRHFSE0QdR5XlzcX5Ps7gNU7dWMa86AHc/edit?usp=sharing)
+## How to navigate our repo for Iteration 2:
+* The application and it's functionality can be found [here.](https://ottericottender.github.io/HydroCalc/). The functionality that we developed was [Zoom Map](https://github.com/users/OttEricOttender/projects/1?pane=issue&itemId=81492341).
+* CI environment is under [Actions.](https://github.com/OttEricOttender/HydroCalc/actions)
+* The detailed user cases can be found from this [link.](http://tiny.cc/fywnzz). It is also listed in the documentation folder.
+* UI Mockup is findable [here](https://www.figma.com/design/x59obDiZSdDhChJvL608Va/Untitled?node-id=0-1&t=smrYO1xFH8P6MYti-1) . It is also listed in the documentation folder.
+* Updated Scope and Release Notes are below.
+* Notes from the second customer meeting can be found [here.](https://docs.google.com/document/d/1PRdYjlnRll53H6keMu4ZVlm6I2K2UcrAuBF5AJSlXvs/edit?tab=t.0)
 
-## Product Vision is findable [here.](HydroCalc/documentation/Project_Vision.md)
+## Release Notes for Iteration 2: Version 1.1.0 - October 2024
+* **New Features:**
+  - [Zoom Map](https://github.com/users/OttEricOttender/projects/1?pane=issue&itemId=81492341). The site displays the map and the map is zoomable.
+* **Known Issues:**
+  - When developing and testing locally, the drainage basin map is working together with the base map like seen [here](https://github.com/OttEricOttender/HydroCalc/blob/main/documentation/Iteration2Picture.png) but when trying to include it in CI environment, the base map isn't showing like seen [here](https://ottericottender.github.io/HydroCalc/LauriApp/index.html). [Issue #35](https://github.com/OttEricOttender/HydroCalc/issues/63)
 
 ## Scope
-
-**Disclaimer: All tasks inside the iterations are ordered by timeline priority with tasks that can (and should) be completed first at the top and tasks that can (and should) be completed last at the bottom. In addition, each sub-task is given a priority rating from 1-3 where 1st priority means that no further steps can/should be taken until that sub-task is done, 2nd priority means that the task is necessary for that iteration and 3rd priority means that they should be done at the end when everything else is done. **
 
 ### Iteration 1 (4 people, 2 weeks, estimated time: 20 hours, actual working time: 22 hours). Deadline: 30/09/2024
 
@@ -166,6 +168,8 @@
   * Working CI environment.
   * Fully working application.
   * Final system documentation (User Guides, Developer Guides).
+
+## Product Vision is findable [here.](HydroCalc/documentation/Project_Vision.md)
 
 
 ## About the team
