@@ -6,36 +6,56 @@ from pysheds.grid import Grid
 from rasterio.windows import from_bounds
 #For export
 from shapely.geometry import shape
+#For coordinates reception
+import sys
 
 # Provide the local path to the downloaded DEM GeoTIFF file
 dem_path = '/opt/homebrew/Cellar/geoserver/2.26.0/libexec/data_dir/data/raster/DTM_5m_eesti.tif' 
 
+# Parsing coordinates from command-line args
+if len(sys.argv) >= 3:
+    try:
+        x, y = float(sys.argv[1]), float(sys.argv[2])
+        print(f"Using provided coordinates: Easting {x}, Northing {y}")
+    except ValueError:
+        print("Error: Coordinates must be numeric.")
+        sys.exit(1)
+else:
+    print("Error: Coordinates not provided.")
+    sys.exit(1)
+
+
+
 # User-defined coordinates for catchment delineation
-x, y = 600000.017, 6450000  # hardcoded for now
+# x, y = 600000.017, 6450000  # hardcoded for testing script-only
 
 # Define a window around the coordinates 
-buffer = 5000  # 5 km buffer
+buffer = 7500  # meters
 
-# Open the DEM using rasterio
-with rasterio.open(dem_path) as src:
-    # Calculate bounds around the point
-    left = x - buffer
-    right = x + buffer
-    bottom = y - buffer
-    top = y + buffer
+try:
+    # Open the DEM using rasterio
+    with rasterio.open(dem_path) as src:
+        # Calculate bounds around the point
+        left = x - buffer
+        right = x + buffer
+        bottom = y - buffer
+        top = y + buffer
 
-    
-    # Read the window from the DEM around the specified point
-    window = from_bounds(left, bottom, right, top, transform=src.transform)
-    dem_window = src.read(1, window=window)
-    transform = src.window_transform(window)
-    profile = src.profile
-    profile.update({
-        'transform': transform,
-        'height': dem_window.shape[0],
-        'width': dem_window.shape[1],
-        'count': 1
-    })
+        
+        # Read the window from the DEM around the specified point
+        window = from_bounds(left, bottom, right, top, transform=src.transform)
+        dem_window = src.read(1, window=window)
+        transform = src.window_transform(window)
+        profile = src.profile
+        profile.update({
+            'transform': transform,
+            'height': dem_window.shape[0],
+            'width': dem_window.shape[1],
+            'count': 1
+        })
+except Exception as e:
+    print(f"Error: {e}")
+    sys.exit(1)
 
 # Create a temporary file to save the DEM window
 temp_dem_path = '../data/temp_dem_window.tif'
@@ -73,7 +93,7 @@ acc = grid.accumulation(flow_direction, dirmap=dirmap)
 
 # Snap pour point to high accumulation cell
 # Value 1000 is for snapping from a meaningful point, we can adjust it in the future if needed
-x_snap, y_snap = grid.snap_to_mask(acc > 1000, (x, y)) # x,y are user entered
+x_snap, y_snap = grid.snap_to_mask(acc > 700, (x, y)) # x,y are user entered
 
 print(f"Snapped coordinates: {x_snap}, {y_snap}")
 
@@ -87,12 +107,11 @@ grid.clip_to(catch)
 branches = grid.extract_river_network(flow_direction, acc > 50, dirmap=dirmap)
 
 
-
 # converting the catchment into a supported dtype (int32)
-catch_int = catch.astype('int32')
+#catch_int = catch.astype('int32')
 
 # Polygonize the catchment for GeoDataFrame conversion
-shapes = grid.polygonize(catch_int)
+shapes = grid.polygonize(catch.astype('int32'))
 
 # conversion of the polygonized shapes into GeoJSON-like features
 geojson_features = []
@@ -110,13 +129,13 @@ for geom, value in shapes:
 gdf_catchment = gpd.GeoDataFrame.from_features(geojson_features, crs='EPSG:3301')
 
 # Save the result as GeoJSON
-gdf_catchment.to_file('../output/watershed.geojson', driver='GeoJSON')
+gdf_catchment.to_file('../output/epsg3301/watershed.geojson', driver='GeoJSON')
 
 print("Watershed delineation saved as GeoJSON")
 
 
 # Convert the river network to a GeoDataFrame for export, saving result as GeoJSON
 gdf_river_network = gpd.GeoDataFrame.from_features(branches, crs='EPSG:3301')
-gdf_river_network.to_file('../output/river_network.geojson', driver='GeoJSON')
+gdf_river_network.to_file('../output/epsg3301/river_network.geojson', driver='GeoJSON')
 
 print("River network saved as GeoJSON")
