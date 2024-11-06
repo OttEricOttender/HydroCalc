@@ -40,5 +40,11 @@ You can also run the Jupyter Notebook file (delineate.ipynb, works the same way)
 jupyter notebook delineate.ipynb
 ```
 
-### 5. Next steps ###
-Next steps involve creating a front-end and back-end using leaflet and flask to visualize the data from the output folder on the map.
+### 5. Running the backend ###
+
+Navigate to /app in your CLI and run:
+```bash
+python main.py
+```
+
+
