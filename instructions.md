@@ -38,7 +38,7 @@ __You are now ready to interact with the application.__
 
 
 ### 5. Optional - Running the Watershed Delineation Script ###
-To test the script directly, Navigate to `/scripts` and run the `delineate.py` script. This will calculate the watershed and river network from a specified point. Use EPSG:3301 coordinate system coordinates as arguments:
+To test the script directly, navigate to `/scripts` and run the `delineate.py` script. This will calculate the watershed and river network from a specified point. Use EPSG:3301 coordinate system coordinates as arguments:
 
 ```bash
 python delineate.py <arg 1> <arg 2>
