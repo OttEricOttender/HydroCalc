@@ -34,7 +34,7 @@ python main.py
 Make sure you've installed Live Server in Visual Studio Code. 
 Inside VSC, navigate to `app/templates/index.html` and _"Go Live"_.
 
-__You are now ready to interact with the application.__
+__You are now ready to interact with the application.__\
 __Note:__ If you encounter _No file/directory found_ errors, you may have to create the following folders manually:
 `output/epsg3301` and `output/converted`.
 
