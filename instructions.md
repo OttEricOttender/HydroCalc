@@ -23,14 +23,14 @@ Maapinna kõrgusmudelid -> Kogu Eesti DTM eraldusvõimega 5m (GeoTIFF, 7.1 GB)
 Place it wherever you wish. You have to reference that file in the delinate.py script.
 
 
-### 3. Running the backend ###
+### 3. Running the Backend ###
 Navigate to /app in your CLI and run:
 ```bash
 python main.py
 ```
 
 
-### 4. Running the frontend ###
+### 4. Running the Frontend ###
 Make sure you've installed Live Server in Visual Studio Code. 
 Inside VSC, navigate to app/templates/index.html and "Go Live".
 
