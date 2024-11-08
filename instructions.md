@@ -32,7 +32,7 @@ python main.py
 
 ### 4. Running the Frontend ###
 Make sure you've installed Live Server in Visual Studio Code. 
-Inside VSC, navigate to app/templates/index.html and "Go Live".
+Inside VSC, navigate to `app/templates/index.html` and "Go Live".
 
 __You are now ready to interact with the application.__
 
