@@ -3,7 +3,8 @@
 ## Setup Instructions ##
 
 ### 1. Set up Conda Environment ###
-First, clone the repository and navigate to the project directory. Then, create a Conda environment using the provided `environment.yml` file (make sure you have Anaconda/Miniconda configured beforehand):
+First, clone the repository and navigate to the project directory. Then, create a Conda environment using the provided `environment.yml` file (make sure you have Anaconda/Miniconda configured beforehand).
+__NB!__ If you are on Windows OS, remove the last line `prefix: /opt/anaconda3/envs/hydro` from `environment.yml` before creating the environment.
 
 ```bash
 conda env create -f environment.yml
@@ -32,11 +33,12 @@ python main.py
 ### 4. Running the frontend ###
 Make sure you've installed Live Server in Visual Studio Code. 
 Inside VSC, navigate to app/templates/index.html and "Go Live".
-You are now ready to interact with the application.
+
+__You are now ready to interact with the application.__
 
 
 ### 5. Optional - Running the Watershed Delineation Script ###
-To test the script directly, Navigate to _/scripts_ and run the delineate.py script. This will calculate the watershed and river network from a specified point. Use EPSG:3301 coordinate system coordinates as arguments:
+To test the script directly, Navigate to _/scripts_ and run the `delineate.py` script. This will calculate the watershed and river network from a specified point. Use EPSG:3301 coordinate system coordinates as arguments:
 
 ```bash
 python delineate.py <arg 1> <arg 2>
@@ -45,7 +47,7 @@ The output GeoJSON files for both the watershed and river network will be genera
 
 
 ### 6. Optional - run script in parts via Jupyter Notebook ###
-You can also run the Jupyter Notebook file (delineate.ipynb, works the same way) to better understand the process and see the intermediate visualization steps:
+You can also run the Jupyter Notebook file (`delineate.ipynb`, works the same way) to better understand the process and see the intermediate visualization steps:
 
 ```bash
 jupyter notebook delineate.ipynb
