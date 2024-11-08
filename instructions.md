@@ -43,7 +43,7 @@ To test the script directly, navigate to `/scripts` and run the `delineate.py` s
 ```bash
 python delineate.py <arg 1> <arg 2>
 ```
-The output GeoJSON files for both the watershed and river network will be generated in the output/epsg3301 directory.
+The output GeoJSON files for both the watershed and river network will be generated in the `output/epsg3301` directory.
 
 
 ### 6. Optional - run script in parts via Jupyter Notebook ###
