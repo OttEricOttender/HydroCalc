@@ -66,8 +66,8 @@ map.on('click', function(e) {
 
 // Handle coordinates inserted as an input.
 otsi.addEventListener('click', function(e) {
-    var lat= latitude.value;
-    var lng= longitude.value;
+    var lat= parseFloat(latitude.value);
+    var lng= parseFloat(longitude.value);
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 
