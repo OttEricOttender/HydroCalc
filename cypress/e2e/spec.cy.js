@@ -3,11 +3,13 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   return false;
 });
 
-// Vaheta visit URL, kui seda on vaja
+// Define the base URL for the map
+const mapUrl = 'http://127.0.0.1:5500/app/templates/';
+
 describe('Map Features', () => {
   describe('Zoom Functionality', () => {
     beforeEach(() => {
-      cy.visit('http://127.0.0.1:5500/app/templates/', { cache: false }); 
+      cy.visit(mapUrl, { cache: false }); 
       cy.wait(1000);
     });
 
@@ -61,9 +63,9 @@ describe('Map Features', () => {
     });*/
   });
 
-  describe('Search By Point', () => {
+  describe('Search Functionality', () => {
     beforeEach(() => {
-      cy.visit('http://127.0.0.1:5500/app/templates/', { cache: false }); 
+      cy.visit(mapUrl, { cache: false }); 
       cy.wait(1000);
     });
 
@@ -84,13 +86,6 @@ describe('Map Features', () => {
       // Check if the popup contains the expected coordinates
       cy.get('.leaflet-popup-content').should('contain', `Coordinates: ${latitude}, ${longitude}`);
     });
-  });
-
-  describe('Search By Coordinates', () => {
-    beforeEach(() => {
-      cy.visit('http://127.0.0.1:5500/app/templates/', { cache: false }); 
-      cy.wait(1000);
-    });
 
     it('should search by coordinates correctly', () => {
       // Define geographic coordinates
@@ -109,9 +104,9 @@ describe('Map Features', () => {
     });
   });
 
-  describe('Display River Network', () => {
+  describe('Delineate Functionality', () => {
     beforeEach(() => {
-      cy.visit('http://127.0.0.1:5500/app/templates/', { cache: false }); 
+      cy.visit(mapUrl, { cache: false }); 
       cy.wait(1000);
     });
 
@@ -128,18 +123,33 @@ describe('Map Features', () => {
           latlng: { lat: latitude, lng: longitude }
         });
 
-         // Simulate a click on the button to find the watershed
+        // Simulate a click on the button to find the watershed
         cy.get('#delineate').click();
 
         // Verify the river network layer is displayed by checking for the path element
+        cy.get('path.leaflet-interactive[stroke="blue"]').should('exist').and('be.visible');
+      });
+    });
+
+    it('should display drainage basin correctly', () => {
+      // Define geographic coordinates
+      const latitude = 58.998140645652136;
+      const longitude = 25.032348632812504;
+  
+      cy.window().then((win) => {
+        const map = win.map;
+  
+        // Simulate a click at the specified geographic coordinates
+        map.fireEvent('click', {
+          latlng: { lat: latitude, lng: longitude }
+        });
+
+        // Simulate a click on the button to find the watershed
+        cy.get('#delineate').click();
+
+        // Verify the drainage basin layer is displayed by checking for the path element
         cy.get('path.leaflet-interactive[stroke="red"]').should('exist').and('be.visible');
       });
     });
   });
-
-  /*describe('Display Drainage Basin', () => {
-    it('should display drainage basin correctly', () => {
-      // Test steps here
-    });
-  });*/
 });
