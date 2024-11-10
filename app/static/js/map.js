@@ -1,3 +1,9 @@
+const latitude= document.getElementById('latitude');
+const longitude= document.getElementById('longitude');
+const otsi= document.getElementById('otsi');
+
+
+
 var map = L.map('map', {
     crs: L.CRS.EPSG3857, // default map projection, supports EPSG:4326 layers
     center: [59, 25.5], // initial view over Estonia
@@ -48,6 +54,20 @@ map.on('click', function(e) {
     var lat = e.latlng.lat;
     var lng = e.latlng.lng;
     selectedCoords = {lat, lng};
+
+    console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
+
+    if (marker) { map.removeLayer(marker); } 
+
+    marker =L.marker([lat, lng]).addTo(map)
+        .bindPopup(`Coordinates: ${lat}, ${lng}`)
+        .openPopup();
+});
+
+// Handle coordinates inserted as an input.
+otsi.addEventListener('click', function(e) {
+    var lat= parseFloat(latitude.value);
+    var lng= parseFloat(longitude.value);
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 

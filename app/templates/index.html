@@ -10,8 +10,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.2/proj4.js"></script>
 </head>
 <body>
-    <div id="map" style="height: 500px; width: 100%;"></div>
-    <button id="button" onclick="findWatershed()">Piiritle</button>
-    <script src="../static/js/map.js"></script> <!-- Link to external JS file -->
+    <div id="infTab">
+        <label for="latitude">Latitude</label>
+        <input type="text" id="latitude" name="latitude"><br>
+        <label for="longitude">Longitude</label>
+        <input type="text" id="longitude" name="longitude"><br>
+        <input type="submit" value="Otsi punkti" id="otsi"><br>
+        <button id="delineate" onclick="findWatershed()">Piiritle</button>
+    </div>
+    <div id="map"></div>
 </body>
+<script src="../static/js/map.js"></script> <!-- Link to external JS file -->
 </html>

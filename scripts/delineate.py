@@ -6,11 +6,12 @@ from pysheds.grid import Grid
 from rasterio.windows import from_bounds
 #For export
 from shapely.geometry import shape
+from pyproj import CRS
 #For coordinates reception
 import sys
 
 # Provide the local path to the downloaded DEM GeoTIFF file
-dem_path = '/opt/homebrew/Cellar/geoserver/2.26.0/libexec/data_dir/data/raster/DTM_5m_eesti.tif' 
+dem_path = 'C:/Projects/Repos/Assets/DTM_5m_eesti.tif' 
 
 # Parsing coordinates from command-line args
 if len(sys.argv) >= 3:
@@ -29,7 +30,6 @@ else:
 # User-defined coordinates for catchment delineation
 # x, y = 600000.017, 6450000  # hardcoded for testing script-only
 
-# Define a window around the coordinates 
 buffer = 7500  # meters
 
 try:
@@ -47,7 +47,10 @@ try:
         dem_window = src.read(1, window=window)
         transform = src.window_transform(window)
         profile = src.profile
+        est_proj = "+proj=lcc +lat_0=57.5175539305556 +lon_0=24 +lat_1=59.3333333333333 +lat_2=58 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+        new_crs = CRS.from_proj4(est_proj)
         profile.update({
+            'crs': new_crs,
             'transform': transform,
             'height': dem_window.shape[0],
             'width': dem_window.shape[1],
