@@ -3,24 +3,49 @@
 ## Setup Instructions ##
 
 ### 1. Set up Conda Environment ###
-First, clone the repository and navigate to the project directory. Then, create a Conda environment using the provided `environment.yml` file (make sure you have Anaconda/Miniconda configured beforehand).
+__1.__ Clone the repository and navigate to the project directory. Then, create a Conda environment (make sure you have Anaconda/Miniconda configured beforehand).
 
 ```bash
-conda env create -f environment.yml
+conda create -n hydro python=3.11.10
 ```
-This will install all necessary dependencies, including PySheds, GeoPandas, and other required libraries.\
 Once the environment is set up, activate the Conda environment:
 
 ```bash
 conda activate hydro
 ```
+__2.__ Install packages from conda:
+
+```bash
+conda install -c conda-forge --file requirements-conda.txt
+```
+
+This will install core GIS and geospatial dependencies as well as numerical and scientific packages.
+
+__3.__ Install pip packages:
+
+```bash
+pip install -r requirements-pip.txt
+```
+This will install packages related to the backend and watershed calculation.
+
+__4.__ Optional packages for Jupyter Notebook:
+
+```bash
+pip install matplotlib scikit-image seaborn
+
+```
+```bash
+conda install notebook ipykernel
+
+```
+
 Install the kernel for the project:
 
 ```bash
 python -m ipykernel install --user --name hydro --display-name "Python (hydro)"
 
 ```
-Inside Visual Studio Code, make sure to choose the correct interpreter. You can use keyboard shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS). It should be listed as _Python 3.11.10 ('hydro')_\
+__5.__ Inside Visual Studio Code, make sure to choose the correct interpreter. You can use keyboard shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS). It should be listed as _Python 3.11.10 ('hydro')_\
 __Note:__ You may have to refresh/restart Visual Studio Code for it to be visible. 
 
 
