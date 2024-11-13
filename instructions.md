@@ -3,19 +3,26 @@
 ## Setup Instructions ##
 
 ### 1. Set up Conda Environment ###
-First, clone the repository and navigate to the project directory. Then, create a Conda environment using the provided `environment.yml` file (make sure you have Anaconda/Miniconda configured beforehand).\
-__NB!__ If you are on Windows OS, remove the last line `prefix: /opt/anaconda3/envs/hydro` from `environment.yml` before creating the environment.
+First, clone the repository and navigate to the project directory. Then, create a Conda environment using the provided `environment.yml` file (make sure you have Anaconda/Miniconda configured beforehand).
 
 ```bash
 conda env create -f environment.yml
 ```
-This will install all necessary dependencies, including PySheds, GeoPandas, and other required libraries.
+This will install all necessary dependencies, including PySheds, GeoPandas, and other required libraries.\
 Once the environment is set up, activate the Conda environment:
 
 ```bash
 conda activate hydro
 ```
-Inside Visual Studio Code, make sure to choose the correct interpreter: _Python 3.11.10 ('hydro')_
+Install the kernel for the project:
+
+```bash
+python -m ipykernel install --user --name hydro --display-name "Python (hydro)"
+
+```
+Inside Visual Studio Code, make sure to choose the correct interpreter. You can use keyboard shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS). It should be listed as _Python 3.11.10 ('hydro')_\
+__Note:__ You may have to refresh/restart Visual Studio Code for it to be visible. 
+
 
 ### 2. DEM data ###
 - [Download DEM data](https://geoportaal.maaamet.ee/est/Ruumiandmed/Korgusandmed/Laadi-korgusandmed-alla-p614.html) 
@@ -34,9 +41,8 @@ python main.py
 Make sure you've installed Live Server in Visual Studio Code. 
 Inside VSC, navigate to `app/templates/index.html` and _"Go Live"_.
 
-__You are now ready to interact with the application.__\
-__Note:__ If you encounter _No file/directory found_ errors, you may have to create the following folders manually:
-`output/epsg3301` and `output/converted`.
+__You are now ready to interact with the application.__
+
 
 ### 5. Optional - Running the Watershed Delineation Script ###
 To test the script directly, navigate to `/scripts` and run the `delineate.py` script. This will calculate the watershed and river network from a specified point. Use EPSG:3301 coordinate system coordinates as arguments:
