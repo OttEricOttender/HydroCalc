@@ -68,6 +68,8 @@ Inside VSC, navigate to `app/templates/index.html` and _"Go Live"_.
 
 __You are now ready to interact with the application.__
 
+__Note:__ If the program doesn't react for any reason, try to perform hard refresh in the browser. You can use the keyboard shortcut `Ctrl+Shift+R` (or `Cmd+Shift+R` on macOS).
+
 
 ### 5. Optional - Running the Watershed Delineation Script ###
 To test the script directly, navigate to `/scripts` and run the `delineate.py` script. This will calculate the watershed and river network from a specified point. Use EPSG:3301 coordinate system coordinates as arguments:

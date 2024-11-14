@@ -28,7 +28,7 @@ function latLngToEST97(lat, lng) {
 
 function findWatershed() {
     if (!selectedCoords) {
-        alert("Please select a point on the map.");
+        alert("Palun vali punkt kaardil.");
         return;
     }
 const { lat, lng } = selectedCoords;
@@ -68,6 +68,7 @@ map.on('click', function(e) {
 otsi.addEventListener('click', function(e) {
     var lat= parseFloat(latitude.value);
     var lng= parseFloat(longitude.value);
+    selectedCoords = {lat, lng};
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 
@@ -100,7 +101,7 @@ fetchIfExists('http://127.0.0.1:5000/output/converted/watershed_wgs84.geojson', 
             fillOpacity: 0.3,
             weight: 2
         }
-    }).addTo(map).bindPopup("Watershed Area");
+    }).addTo(map).bindPopup("Valgala");
 });
 
 // Load and display river network layer
@@ -110,5 +111,47 @@ fetchIfExists('http://127.0.0.1:5000/output/converted/river_network_wgs84.geojso
             color: 'blue',
             weight: 2
         }
-    }).addTo(map).bindPopup("River Network");
+    }).addTo(map).bindPopup("Jõgikond");
 });
+
+fetchIfExists('http://127.0.0.1:5000/output/converted/metadata.geojson', data => {
+    // Extracting features from metadata
+    const features = data.features;
+
+    // Find the surface area from the first feature's properties
+    const surfaceArea = features[0].properties.surface_area_sqkm;
+
+    // Extract coordinates for user and snapped points
+    let userCoords, snappedCoords;
+
+    features.forEach(feature => {
+        if (feature.geometry.user_coords) {
+            userCoords = feature.geometry.user_coords;
+        } else if (feature.geometry.snapped_coords) {
+            snappedCoords = feature.geometry.snapped_coords;
+        }
+    });
+
+    // Displaying markers for user and snapped coordinates (if available)
+    if (userCoords) {
+        L.circleMarker([userCoords.lat, userCoords.lon], {
+            color: 'blue',
+            radius: 5
+        }).addTo(map).bindPopup("Kasutaja sisestatud koordinaadid");
+
+        document.getElementById('user-coords').innerText = `Kasutaja sisestatud: (${userCoords.lat.toFixed(5)}, ${userCoords.lon.toFixed(5)})`;
+    }
+
+    if (snappedCoords) {
+        L.circleMarker([snappedCoords.lat, snappedCoords.lon], {
+            color: 'red',
+            radius: 5
+        }).addTo(map).bindPopup("Vooluveekogu koordinaadid");
+
+        document.getElementById('snapped-coords').innerText = `Vooluveekogu: (${snappedCoords.lat.toFixed(5)}, ${snappedCoords.lon.toFixed(5)})`;
+    }
+
+    document.getElementById('surface-area').innerHTML = `Valgala pindala: ${surfaceArea} km<sup>2</sup>`;
+});
+
+

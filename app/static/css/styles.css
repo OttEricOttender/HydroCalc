@@ -71,3 +71,41 @@ body {
 label {
   font-weight:700;
 }
+
+#metadata-panel {
+  background-color: white;
+  width: 77.5%;
+  padding: 10px;
+  padding-top: 1%;
+  margin-top: 10px;
+  border-radius: 5px;
+  margin-left: 1%;
+  margin-right: 10%;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid;
+  border-radius: 50%;
+  margin-right: 5px;
+  background-color: transparent; 
+}
+
+#dot-blue {
+  border-color: blue;
+}
+
+#dot-red {
+  border-color: red;
+}
+
+#andmed {
+  font-weight: bold;
+}

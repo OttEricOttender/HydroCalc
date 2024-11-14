@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watershed Delineation Map</title>
+    <title>Sademevee Abimees</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -11,12 +11,25 @@
 </head>
 <body>
     <div id="infTab">
-        <label for="latitude">Latitude</label>
+        <label for="latitude">Laiuskraad</label>
         <input type="text" id="latitude" name="latitude"><br>
-        <label for="longitude">Longitude</label>
+        <label for="longitude">Pikkuskraad</label>
         <input type="text" id="longitude" name="longitude"><br>
         <input type="submit" value="Otsi punkti" id="otsi"><br>
         <button id="button" onclick="findWatershed()">Piiritle</button>
+        <div id="metadata-panel">
+            <p id="andmed">Koordinaadid:</p>
+            <div class="info-item">
+                <div class="color-dot" id="dot-blue"></div>
+                <div id="user-coords">Kasutaja sisestatud: </div>
+            </div>
+            <div class="info-item">
+                <div class="color-dot" id="dot-red"></div>
+                <div id="snapped-coords">Vooluveekogu: </div>
+            </div>
+            <p id="andmed">Lisainfo:</p>
+            <div id="surface-area">Valgala pindala: </div>
+        </div>                      
     </div>
     <div id="map"></div>
 </body>

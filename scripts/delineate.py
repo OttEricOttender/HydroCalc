@@ -1,3 +1,5 @@
+#For coordinates reception
+import sys
 #For calculation
 import numpy as np
 import geopandas as gpd
@@ -5,9 +7,9 @@ import rasterio
 from pysheds.grid import Grid
 from rasterio.windows import from_bounds
 #For export
-from shapely.geometry import shape
-#For coordinates reception
-import sys
+from shapely.geometry import shape, Point, mapping
+import json
+
 
 # Provide the local path to the downloaded DEM GeoTIFF file
 dem_path = '/opt/homebrew/Cellar/geoserver/2.26.0/libexec/data_dir/data/raster/DTM_5m_eesti.tif' 
@@ -24,10 +26,6 @@ else:
     print("Error: Coordinates not provided.")
     sys.exit(1)
 
-
-
-# User-defined coordinates for catchment delineation
-# x, y = 600000.017, 6450000  # hardcoded for testing script-only
 
 # Define a window around the coordinates 
 buffer = 7500  # meters
@@ -139,3 +137,33 @@ gdf_river_network = gpd.GeoDataFrame.from_features(branches, crs='EPSG:3301')
 gdf_river_network.to_file('../output/epsg3301/river_network.geojson', driver='GeoJSON')
 
 print("River network saved as GeoJSON")
+
+# Calculating the surface area
+total_area_sqkm = (gdf_catchment['geometry'].area.sum()) / 1e6
+user_coords = (x,y)
+snapped_coords = (x_snap, y_snap)
+
+# Prepare metadata dictionary
+metadata = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "surface_area_sqkm": total_area_sqkm,
+            },
+             "type": "Feature",
+            "geometry": {"type": "Point", "user_coords": user_coords},
+        },
+        {
+            "type": "Feature",
+            "geometry": {"type": "Point", "snapped_coords": snapped_coords}
+        }
+    ]
+}
+
+# Save metadata as GeoJSON
+with open('../output/epsg3301/metadata.geojson', 'w') as f:
+    json.dump(metadata, f)
+
+print("Metadata saved as GeoJSON")
