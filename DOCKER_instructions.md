@@ -32,3 +32,4 @@ If the raster file is missing in /data, the container will attempt to download i
 __Option 2:__ Manual Placement
 
 To skip the download, copy the raster file (DTM_5m_eesti.tif) to the data directory before building or running the container.
+__Note:__ Docker image with the raster file included at build time is 9.61 GB.
