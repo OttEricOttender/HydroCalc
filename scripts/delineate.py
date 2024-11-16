@@ -1,5 +1,7 @@
 #For coordinates reception
 import sys
+#For Raster DEM data
+import urllib.request
 #For calculation
 import numpy as np
 import geopandas as gpd
@@ -14,7 +16,15 @@ import os
 
 
 # Provide the local path to the downloaded DEM GeoTIFF file
-dem_path = '/opt/homebrew/Cellar/geoserver/2.26.0/libexec/data_dir/data/raster/DTM_5m_eesti.tif' 
+dem_path = '../data/DTM_5m_eesti.tif'
+if not os.path.exists(dem_path):
+    print("Raster file missing. Downloading...")
+    urllib.request.urlretrieve(
+        "https://geoportaal.maaamet.ee/index.php?lang_id=1&plugin_act=otsing&andmetyyp=mp_korgusmudelid&dl=1&f=DTM_5m_eesti.tif&page_id=614",
+        dem_path
+    )
+    print("Raster file downloaded.")
+
 
 # Parsing coordinates from command-line args
 if len(sys.argv) >= 3:

@@ -2,7 +2,7 @@ const latitude= document.getElementById('latitude');
 const longitude= document.getElementById('longitude');
 const otsi= document.getElementById('otsi');
 
-
+const url='http://127.0.0.1:5001';
 
 var map = L.map('map', {
     crs: L.CRS.EPSG3857, // default map projection, supports EPSG:4326 layers
@@ -52,7 +52,7 @@ if (
 }
 performCleanup();
 showStatus("Arvutab... Palun oodake.");
-fetch('http://127.0.0.1:5000/coordinates', {
+fetch(url.concat('/coordinates'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -123,7 +123,7 @@ function fetchIfExists(url, callback) {
 
 function updateLayers() {
     // Load and display watershed layer
-    fetchIfExists('http://127.0.0.1:5000/output/converted/watershed.geojson', data => {
+    fetchIfExists(url.concat('/output/converted/watershed.geojson'), data => {
         L.geoJSON(data, {
             style: {
                 color: 'red',
@@ -135,7 +135,7 @@ function updateLayers() {
     });
 
     // Load and display river network layer
-    fetchIfExists('http://127.0.0.1:5000/output/converted/river_network.geojson', data => {
+    fetchIfExists(url.concat('/output/converted/river_network.geojson'), data => {
         L.geoJSON(data, {
             style: {
                 color: 'blue',
@@ -144,7 +144,7 @@ function updateLayers() {
         }).addTo(map).bindPopup("Jõgikond");
     });
 
-    fetchIfExists('http://127.0.0.1:5000/output/converted/metadata.geojson', data => {
+    fetchIfExists(url.concat('/output/converted/metadata.geojson'), data => {
         // Extracting features from metadata
         const features = data.features;
     
