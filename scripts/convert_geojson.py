@@ -1,5 +1,6 @@
 import json
 from pyproj import Transformer
+import os
 
 # setting up the transformer (EPSG:3301 -> EPSG:4326)
 transformer = Transformer.from_crs("EPSG:3301", "EPSG:4326", always_xy=True)
@@ -65,13 +66,21 @@ def convert_metadata_coords(input_path, output_path):
         json.dump(metadata, file)
 
 # Paths for input and output
-input_river_network = "../output/epsg3301/river_network.geojson"
-output_river_network = "../output/converted/river_network_wgs84.geojson"
-input_watershed = "../output/epsg3301/watershed.geojson"
-output_watershed = "../output/converted/watershed_wgs84.geojson"
-input_metadata = "../output/epsg3301/metadata.geojson"
+
+epsg3301_files = [
+    "../output/epsg3301/watershed.geojson",
+    "../output/epsg3301/river_network.geojson",
+    "../output/epsg3301/metadata.geojson"
+]
+output_watershed = "../output/converted/watershed.geojson"
+output_river_network = "../output/converted/river_network.geojson"
 output_metadata = "../output/converted/metadata.geojson"
 
-convert_watershed(input_watershed, output_watershed)
-convert_river_network(input_river_network, output_river_network)
-convert_metadata_coords(input_metadata, output_metadata)
+convert_watershed(epsg3301_files[0], output_watershed)
+convert_river_network(epsg3301_files[1], output_river_network)
+convert_metadata_coords(epsg3301_files[2], output_metadata)
+
+for file in epsg3301_files:
+    if os.path.exists(file):
+        os.remove(file)
+        print(f"EPSG:3301 temporary file {file} deleted.")

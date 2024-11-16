@@ -1,6 +1,6 @@
 data/temp_dem_window.tif
-output/converted/river_network_wgs84.geojson
-output/converted/watershed_wgs84.geojson
+output/converted/river_network.geojson
+output/converted/watershed.geojson
 output/converted/metadata.geojson
 output/epsg3301/river_network.geojson
 output/epsg3301/watershed.geojson

@@ -109,3 +109,9 @@ label {
 #andmed {
   font-weight: bold;
 }
+
+#status {
+  display: none; 
+  color: green; font-weight: bold; 
+  margin-bottom: 10px;
+}

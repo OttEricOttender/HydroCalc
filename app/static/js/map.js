@@ -33,8 +33,26 @@ function findWatershed() {
     }
 const { lat, lng } = selectedCoords;
 const est97Coords = latLngToEST97(lat, lng);
-
-fetch('http://127.0.0.1:5000/coordinates', { 
+const rasterBounds = {
+    minEasting: 365000.0,
+    maxEasting: 740000.0,
+    minNorthing: 6375000.0,
+    maxNorthing: 6635000.0
+}
+// Checking boundaries
+if (
+    est97Coords.easting < rasterBounds.minEasting ||
+    est97Coords.easting > rasterBounds.maxEasting ||
+    est97Coords.northing < rasterBounds.minNorthing ||
+    est97Coords.northing > rasterBounds.maxNorthing
+) {
+    alert("Palun vali punkt, mis jääb Eesti piiridesse.");
+    selectedCoords = null;
+    return;
+}
+performCleanup();
+showStatus("Arvutab... Palun oodake.");
+fetch('http://127.0.0.1:5000/coordinates', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -44,10 +62,21 @@ fetch('http://127.0.0.1:5000/coordinates', {
         northing: est97Coords.northing
     })
 })
-.then(response => response.json())
-.then(data => console.log('Success:', data))
-.catch(error => console.error('Error:', error));
-}
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Request not ready")
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        showStatus("Arvutamine valmis.");
+        updateLayers(); // reloading layers dynamically
+        setTimeout(hideStatus, 3000);
+
+    })
+    .catch(error => console.error('Error:', error));
+    }
 
 // Handle map click to get and send coordinates
 map.on('click', function(e) {
@@ -60,7 +89,7 @@ map.on('click', function(e) {
     if (marker) { map.removeLayer(marker); } 
 
     marker =L.marker([lat, lng]).addTo(map)
-        .bindPopup(`Coordinates: ${lat}, ${lng}`)
+        .bindPopup(`Koordinaadid: ${lat}, ${lng}`)
         .openPopup();
 });
 
@@ -75,7 +104,7 @@ otsi.addEventListener('click', function(e) {
     if (marker) { map.removeLayer(marker); } 
 
     marker =L.marker([lat, lng]).addTo(map)
-        .bindPopup(`Coordinates: ${lat}, ${lng}`)
+        .bindPopup(`Koordinaadid: ${lat}, ${lng}`)
         .openPopup();
 });
 
@@ -92,66 +121,107 @@ function fetchIfExists(url, callback) {
         .catch(error => console.log(`${url} not found. Waiting for generation.`));
 }
 
-// Load and display watershed layer
-fetchIfExists('http://127.0.0.1:5000/output/converted/watershed_wgs84.geojson', data => {
-    L.geoJSON(data, {
-        style: {
-            color: 'red',
-            fillColor: 'orange',
-            fillOpacity: 0.3,
-            weight: 2
-        }
-    }).addTo(map).bindPopup("Valgala");
-});
-
-// Load and display river network layer
-fetchIfExists('http://127.0.0.1:5000/output/converted/river_network_wgs84.geojson', data => {
-    L.geoJSON(data, {
-        style: {
-            color: 'blue',
-            weight: 2
-        }
-    }).addTo(map).bindPopup("Jõgikond");
-});
-
-fetchIfExists('http://127.0.0.1:5000/output/converted/metadata.geojson', data => {
-    // Extracting features from metadata
-    const features = data.features;
-
-    // Find the surface area from the first feature's properties
-    const surfaceArea = features[0].properties.surface_area_sqkm;
-
-    // Extract coordinates for user and snapped points
-    let userCoords, snappedCoords;
-
-    features.forEach(feature => {
-        if (feature.geometry.user_coords) {
-            userCoords = feature.geometry.user_coords;
-        } else if (feature.geometry.snapped_coords) {
-            snappedCoords = feature.geometry.snapped_coords;
-        }
+function updateLayers() {
+    // Load and display watershed layer
+    fetchIfExists('http://127.0.0.1:5000/output/converted/watershed.geojson', data => {
+        L.geoJSON(data, {
+            style: {
+                color: 'red',
+                fillColor: 'orange',
+                fillOpacity: 0.3,
+                weight: 2
+            }
+        }).addTo(map).bindPopup("Valgala");
     });
 
-    // Displaying markers for user and snapped coordinates (if available)
-    if (userCoords) {
-        L.circleMarker([userCoords.lat, userCoords.lon], {
-            color: 'blue',
-            radius: 5
-        }).addTo(map).bindPopup("Kasutaja sisestatud koordinaadid");
+    // Load and display river network layer
+    fetchIfExists('http://127.0.0.1:5000/output/converted/river_network.geojson', data => {
+        L.geoJSON(data, {
+            style: {
+                color: 'blue',
+                weight: 2
+            }
+        }).addTo(map).bindPopup("Jõgikond");
+    });
 
-        document.getElementById('user-coords').innerText = `Kasutaja sisestatud: (${userCoords.lat.toFixed(5)}, ${userCoords.lon.toFixed(5)})`;
-    }
+    fetchIfExists('http://127.0.0.1:5000/output/converted/metadata.geojson', data => {
+        // Extracting features from metadata
+        const features = data.features;
+    
+        // Find the surface area from the first feature's properties
+        const surfaceArea = features[0].properties.surface_area_sqkm;
+    
+        // Extract coordinates for user and snapped points
+        let userCoords, snappedCoords;
+    
+        features.forEach(feature => {
+            if (feature.geometry.user_coords) {
+                userCoords = feature.geometry.user_coords;
+            } else if (feature.geometry.snapped_coords) {
+                snappedCoords = feature.geometry.snapped_coords;
+            }
+        });
+    
+        // Displaying markers for user and snapped coordinates (if available)
+        if (userCoords) {
+            const userCircle = L.circleMarker([userCoords.lat, userCoords.lon], {
+                color: 'blue',
+                radius: 5
+            }).addTo(map).bindPopup("Kasutaja sisestatud koordinaadid");
+            circleMarkers.push(userCircle);
+    
+            document.getElementById('user-coords').innerText = `Kasutaja sisestatud: (${userCoords.lat.toFixed(5)}, ${userCoords.lon.toFixed(5)})`;
+        }
+    
+        if (snappedCoords) {
+            const snappedCircle = L.circleMarker([snappedCoords.lat, snappedCoords.lon], {
+                color: 'red',
+                radius: 5
+            }).addTo(map).bindPopup("Vooluveekogu koordinaadid");
+            circleMarkers.push(snappedCircle);
+    
+            document.getElementById('snapped-coords').innerText = `Vooluveekogu: (${snappedCoords.lat.toFixed(5)}, ${snappedCoords.lon.toFixed(5)})`;
+        }
+    
+        document.getElementById('surface-area').innerHTML = `Valgala pindala: ${surfaceArea} km<sup>2</sup>`;
+    });
 
-    if (snappedCoords) {
-        L.circleMarker([snappedCoords.lat, snappedCoords.lon], {
-            color: 'red',
-            radius: 5
-        }).addTo(map).bindPopup("Vooluveekogu koordinaadid");
+    map.removeLayer(marker);
+}
 
-        document.getElementById('snapped-coords').innerText = `Vooluveekogu: (${snappedCoords.lat.toFixed(5)}, ${snappedCoords.lon.toFixed(5)})`;
-    }
+let circleMarkers = [];
 
-    document.getElementById('surface-area').innerHTML = `Valgala pindala: ${surfaceArea} km<sup>2</sup>`;
-});
+function performCleanup() {
+    
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.GeoJSON) {
+            map.removeLayer(layer);
+        }   
+    });
+    circleMarkers.forEach(circleMarker => {
+        map.removeLayer(circleMarker);
+    });
+    circleMarkers = []; 
+    selectedCoords = null;
+}
+
+function showStatus(message) {
+    const statusDiv = document.getElementById('status');
+    statusDiv.style.display = 'block'; 
+    statusDiv.textContent = message; 
+}
+
+function hideStatus() {
+    const statusDiv = document.getElementById('status');
+    statusDiv.style.display = 'none'; 
+}
+
+
+
+updateLayers();
+
+
+
+
 
 

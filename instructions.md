@@ -60,13 +60,13 @@ Navigate to `/app` in your CLI and run:
 ```bash
 python main.py
 ```
-
-
-### 4. Running the Frontend ###
-Make sure you've installed Live Server in Visual Studio Code. 
-Inside VSC, navigate to `app/templates/index.html` and _"Go Live"_.
+Navigate to your browser and use either `http://127.0.0.1:5000/` or `localhost:5000/`.
 
 __You are now ready to interact with the application.__
+
+### 4. Optional - Testing the Frontend functionality ###
+Make sure you've installed Live Server in Visual Studio Code. 
+Inside VSC, navigate to `app/templates/index.html` and _"Go Live"_.
 
 __Note:__ If the program doesn't react for any reason, try to perform hard refresh in the browser. You can use the keyboard shortcut `Ctrl+Shift+R` (or `Cmd+Shift+R` on macOS).
 

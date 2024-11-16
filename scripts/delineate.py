@@ -7,8 +7,10 @@ import rasterio
 from pysheds.grid import Grid
 from rasterio.windows import from_bounds
 #For export
-from shapely.geometry import shape, Point, mapping
+from shapely.geometry import shape
 import json
+#For cleanup
+import os
 
 
 # Provide the local path to the downloaded DEM GeoTIFF file
@@ -167,3 +169,7 @@ with open('../output/epsg3301/metadata.geojson', 'w') as f:
     json.dump(metadata, f)
 
 print("Metadata saved as GeoJSON")
+
+if os.path.exists(temp_dem_path):
+    os.remove(temp_dem_path)
+    print(f"Temporary file {temp_dem_path} deleted.")
