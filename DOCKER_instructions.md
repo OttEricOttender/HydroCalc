@@ -4,7 +4,7 @@
 
 __1.__ Docker must be installed and running.
 __2.__ The project includes all necessary files, except for the DEM raster file (DTM_5m_eesti.tif).
-Before proceeding, read about the DEM raster file [options](#raster).
+Before proceeding, read about the DEM [Raster File Handling](#raster).
 
 
 ## Build the Docker Image ## 
