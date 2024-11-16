@@ -27,7 +27,7 @@ Port 5001 is mapped to the container's internal port 5000.
 
 __Option 1:__ Automatic Download
 
-If the raster file is missing in /data, the container will attempt to download it at runtime. Currently, the download progress won't display in real time due to Docker's logging behavior.
+If the raster file is missing in /data, the container will attempt to download it at runtime. Currently, the download progress won't display in real time due to Docker's logging behavior.\
 __Option 2:__ Manual Placement
 
 To skip the download, copy the raster file (DTM_5m_eesti.tif) to the data directory before building or running the container.
