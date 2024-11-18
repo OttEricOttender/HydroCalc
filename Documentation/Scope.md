@@ -64,7 +64,7 @@
 
 
 
-### Iteration 3 (4 people, 3 weeks, X hours). Deadline: 18/11/2024
+### Iteration 3 (4 people, 3 weeks, 50 hours). Deadline: 18/11/2024
 **Goal**: The goal of this iteration is to (i) Develop all the core use cases, (ii) Create automated tests and (iii) Upgrade CI environment
 
 **Use Cases to be Implemented:**
@@ -82,24 +82,24 @@
   * As a user, I want the application to follow basic accessibility guidelines, such as providing alt text for images and keyboard navigation support, to ensure usability for all users (including those with disabilities).
       
 **Tasks:** 
-  * Develop the search bar functionality for the map. [Issue #19](https://github.com/OttEricOttender/HydroCalc/issues/47) (Estimated: 2 hours, Actual: Y hours)
-  * Develop a pin for marking a spot on the map. [Issue #20](https://github.com/OttEricOttender/HydroCalc/issues/48) (Estimated: 1 hours, Actual: Y hours)
-  * Find and incorporate the databases holding the data of the Drainage Basins. [Issue #21](https://github.com/OttEricOttender/HydroCalc/issues/49) (Estimated: 2 hours, Actual: Y hours)
-  * Save the Drainage Basin data into our own database. [Issue #22](https://github.com/OttEricOttender/HydroCalc/issues/50) (Estimated: 3 hours, Actual: Y hours)
-  * Display the Drainage Basins overlay on the map. [Issue #23](https://github.com/OttEricOttender/HydroCalc/issues/51) (Estimated: 3 hours, Actual: Y hours)
-  * Find and incorporate the databases holding the data of the land improvements. [Issue #24](https://github.com/OttEricOttender/HydroCalc/issues/52) (Estimated: 2 hours, Actual: Y hours)
-  * Save the Land Improvement data into our own database. [Issue #25](https://github.com/OttEricOttender/HydroCalc/issues/53) (Estimated: 3 hours, Actual: Y hours)
-  * Display the Land Improvements overlay on the map. [Issue #26](https://github.com/OttEricOttender/HydroCalc/issues/54) (Estimated: 3 hours, Actual: Y hours)
-  * Find and incorporate the databases holding the data of the rivers networks. [Issue #27](https://github.com/OttEricOttender/HydroCalc/issues/55) (Estimated: 2 hours, Actual: Y hours)
-  * Save the River Network data into our own database. [Issue #28](https://github.com/OttEricOttender/HydroCalc/issues/56) (Estimated: 3 hours, Actual: Y hours)
-  * Display the River Networks overlay on the map. [Issue #29](https://github.com/OttEricOttender/HydroCalc/issues/57) (Estimated: 3 hours, Actual: Y hours)
+  * Develop the search bar functionality for the map. [Issue #19](https://github.com/OttEricOttender/HydroCalc/issues/47) (Estimated: 2 hours, Actual: 2 hours)
+  * Develop a pin for marking a spot on the map. [Issue #20](https://github.com/OttEricOttender/HydroCalc/issues/48) (Estimated: 1 hours, Actual: 2 hours)
+  * Find and incorporate the databases holding the data of the Drainage Basins. [Issue #21](https://github.com/OttEricOttender/HydroCalc/issues/49) (Estimated: 2 hours, Actual: 4 hours)
+  * Save the Drainage Basin data into our own database. [Issue #22](https://github.com/OttEricOttender/HydroCalc/issues/50) (Estimated: 3 hours, Actual: 4 hours)
+  * Display the Drainage Basins overlay on the map. [Issue #23](https://github.com/OttEricOttender/HydroCalc/issues/51) (Estimated: 3 hours, Actual: 3 hours)
+  * Find and incorporate the databases holding the data of the land improvements. [Issue #24](https://github.com/OttEricOttender/HydroCalc/issues/52) (Estimated: 2 hours, Actual: 4 hours)
+  * Save the Land Improvement data into our own database. [Issue #25](https://github.com/OttEricOttender/HydroCalc/issues/53) (Estimated: 3 hours, Actual: 3 hours)
+  * Display the Land Improvements overlay on the map. [Issue #26](https://github.com/OttEricOttender/HydroCalc/issues/54) (Estimated: 3 hours, Actual: 3 hours)
+  * Find and incorporate the databases holding the data of the rivers networks. [Issue #27](https://github.com/OttEricOttender/HydroCalc/issues/55) (Estimated: 2 hours, Actual: 1 hours)
+  * Save the River Network data into our own database. [Issue #28](https://github.com/OttEricOttender/HydroCalc/issues/56) (Estimated: 3 hours, Actual: 3 hours)
+  * Display the River Networks overlay on the map. [Issue #29](https://github.com/OttEricOttender/HydroCalc/issues/57) (Estimated: 3 hours, Actual: 3 hours)
     
 **Testing:**
-  * Conduct tests for **Search By Coordinates** [Issue #30](https://github.com/OttEricOttender/HydroCalc/issues/58) (Estimated: 3 hours, Actual: Y hours)
-  * Conduct tests for **Search By Point** [Issue #31](https://github.com/OttEricOttender/HydroCalc/issues/59) (Estimated: 2 hours, Actual: Y hours)
-  * Conduct tests for **Display Drainage Basin** [Issue #32](https://github.com/OttEricOttender/HydroCalc/issues/60) (Estimated: 3 hours, Actual: Y hours)
-  * Conduct tests for **Display River Network** [Issue #33](https://github.com/OttEricOttender/HydroCalc/issues/61) (Estimated: 3 hours, Actual: Y hours)
-  * Incorporate the created tests into the CI environment. [Issue #34](https://github.com/OttEricOttender/HydroCalc/issues/62) (Estimated: 2 hours, Actual: Y hours)
+  * Conduct tests for **Search By Coordinates** [Issue #30](https://github.com/OttEricOttender/HydroCalc/issues/58) (Estimated: 3 hours, Actual: 2 hours)
+  * Conduct tests for **Search By Point** [Issue #31](https://github.com/OttEricOttender/HydroCalc/issues/59) (Estimated: 2 hours, Actual: 2 hours)
+  * Conduct tests for **Display Drainage Basin** [Issue #32](https://github.com/OttEricOttender/HydroCalc/issues/60) (Estimated: 3 hours, Actual: 2 hours)
+  * Conduct tests for **Display River Network** [Issue #33](https://github.com/OttEricOttender/HydroCalc/issues/61) (Estimated: 3 hours, Actual: 4 hours)
+  * Incorporate the created tests into the CI environment. [Issue #34](https://github.com/OttEricOttender/HydroCalc/issues/62) (Estimated: 2 hours, Actual: 2 hours)
   
 **Deliverables:**
   * Functional **Search By Coordinates** module (UI).
@@ -132,13 +132,24 @@
   * As a system administrator, I want the system to handle up to 500 concurrent users without degrading performance
 
 **Tasks:**
-  * Detailed tasks for the functionalities will be listed after Iteration 3
-  * Response to the peer-review.
+  * Develop the information tab to display relevant information about the spot chosen on the map. [Issue #36](https://github.com/OttEricOttender/HydroCalc/issues/66) (Estimated: 3 hours, Actual Y hours)
+  * Write the code for the necessary calculations done by the application. [Issue #37](https://github.com/OttEricOttender/HydroCalc/issues/67) (Estimated: 4 hours, Actual Y hours)
+  * Figure out the selection of overlays that could be displayed on the map. [Issue #38](https://github.com/OttEricOttender/HydroCalc/issues/68) (Estimated: 1 hours, Actual Y hours)
+  * Develop the possibility of displaying different overlays on map. [Issue #39](https://github.com/OttEricOttender/HydroCalc/issues/69) (Estimated: 3 hours, Actual Y hours)
+  * Make it possible for the user to export the information from the site as a PDF file. [Issue #40](https://github.com/OttEricOttender/HydroCalc/issues/70) (Estimated: 3 hours, Actual Y hours)
+  * Add the functionality of saving previous searches. [Issue #41](https://github.com/OttEricOttender/HydroCalc/issues/71) (Estimated: 4 hours, Actual Y hours)
+  * Develop a database for saving the searches. [Issue #42](https://github.com/OttEricOttender/HydroCalc/issues/72) (Estimated: 2 hours, Actual Y hours)
+  * Develop the Tutorial environment. [Issue #43](https://github.com/OttEricOttender/HydroCalc/issues/73) (Estimated: 4 hours, Actual Y hours)
+  * Response to the peer-review. [Issue #44](https://github.com/OttEricOttender/HydroCalc/issues/74) (Estimated: 1 hour, Actual Y hours)
 
 **Testing**
-  * Automated testing for new functionalities.
-  * Addition of more automated tests to CI.
-  * Conduct internal acceptance testing prior to the release.
+  * Conduct tests for **Information Tab** [Issue #45](https://github.com/OttEricOttender/HydroCalc/issues/75) (Estimated: 3 hours, Actual: Y hours)
+  * Conduct tests for **Display Various Layers** [Issue #46](https://github.com/OttEricOttender/HydroCalc/issues/76) (Estimated: 2 hours, Actual: Y hours)
+  * Conduct tests for **Export Hydrological Data** [Issue #47](https://github.com/OttEricOttender/HydroCalc/issues/77) (Estimated: 3 hours, Actual: Y hours)
+  * Conduct tests for **Display Search History** [Issue #48](https://github.com/OttEricOttender/HydroCalc/issues/78) (Estimated: 3 hours, Actual: Y hours)
+  * Conduct tests for **Tutorial** [Issue #49](https://github.com/OttEricOttender/HydroCalc/issues/79) (Estimated: 3 hours, Actual: Y hours)
+  * Addition of more automated tests to CI. [Issue #50](https://github.com/OttEricOttender/HydroCalc/issues/80) (Estimated: 2 hours, Actual: Y hours)
+  * Conduct internal acceptance testing prior to the release. [Issue #51](https://github.com/OttEricOttender/HydroCalc/issues/81) (Estimated: 4 hours, Actual: Y hours)
 
 **Deliverables**
   * Functional **Information Tab** module (UI + backend + database).
