@@ -1,7 +1,7 @@
 # Core GIS and geospatial dependencies
 gdal
 proj
-geopandas
+geopandas=1.0.1
 rasterio
 shapely
 pyproj
@@ -9,4 +9,6 @@ pyproj
 # Numerical and scientific packages
 numpy=1.26.4
 scipy
-pandas
+pandas=2.2.3
+# Package installers
+pip

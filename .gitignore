@@ -5,3 +5,4 @@ output/converted/metadata.geojson
 output/epsg3301/river_network.geojson
 output/epsg3301/watershed.geojson
 output/epsg3301/metadata.geojson
+data/DTM_5m_eesti.tif
