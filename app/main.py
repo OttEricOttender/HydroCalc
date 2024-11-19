@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import subprocess
 
-
-
+from shapely import Point
+from shapely.geometry import mapping
 
 app = Flask(__name__)
 CORS(app)
@@ -30,7 +30,7 @@ def receive_coordinates():
     print(f"Received coordinates: Latitude: {lat}, Longitude: {lng}")
     print(f"EPSG:3301 Coordinates: Easting: {easting}, Northing: {northing}")
 
-    # Call watershed delineation script 
+    # Call watershed delineation script
     subprocess.call(['python', '../scripts/delineate.py', str(easting), str(northing)])
 
     # Convert GeoJSON to WGS84

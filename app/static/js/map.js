@@ -16,7 +16,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 let selectedCoords = null;
+let polygon = null;
 let marker = null;
+let circle = null;
 
 // Convert latitude/longitude to EPSG:3301
 function latLngToEST97(lat, lng) {
@@ -26,27 +28,105 @@ function latLngToEST97(lat, lng) {
     return { easting: est97Coords[0], northing: est97Coords[1] };
 }
 
-function findWatershed() {
+function loadWatershedLayers() {
+    console.log("loading layers")
+    // Remove existing layers if they exist
+    if (window.watershedLayer) {
+        map.removeLayer(window.watershedLayer);
+    }
+    if (window.riverLayer) {
+        map.removeLayer(window.riverLayer);
+    }
+
+    // Load watershed layer
+    fetchIfExists('http://127.0.0.1:5000/output/converted/watershed_wgs84.geojson', data => {
+        window.watershedLayer = L.geoJSON(data, {
+            style: {
+                color: 'red',
+                fillColor: 'orange',
+                fillOpacity: 0.3,
+                weight: 2
+            }
+        }).addTo(map).bindPopup("Watershed Area");
+    });
+
+    // Load river network layer
+    fetchIfExists('http://127.0.0.1:5000/output/converted/river_network_wgs84.geojson', data => {
+        window.riverLayer = L.geoJSON(data, {
+            style: {
+                color: 'blue',
+                weight: 2
+            }
+        }).addTo(map).bindPopup("River Network");
+    });
+}
+
+function findWatershed(retries = 3, delay = 500){
     if (!selectedCoords) {
         alert("Please select a point on the map.");
         return;
     }
-const { lat, lng } = selectedCoords;
-const est97Coords = latLngToEST97(lat, lng);
+    const { lat, lng } = selectedCoords;
+    const est97Coords = latLngToEST97(lat, lng);
 
-fetch('http://127.0.0.1:5000/coordinates', { 
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        latitude: lat,
-        longitude: lng,
-        easting: est97Coords.easting,
-        northing: est97Coords.northing
+    fetch('http://127.0.0.1:5000/coordinates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            latitude: lat,
+            longitude: lng,
+            easting: est97Coords.easting,
+            northing: est97Coords.northing,
+        })
     })
-})
-.then(response => response.json())
-.then(data => console.log('Success:', data))
-.catch(error => console.error('Error:', error));
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        console.log(data)
+        loadWatershedLayers();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (retries > 0) {
+            setTimeout(() => findWatershed(retries - 1, delay * 2), delay);
+        } else {
+            console.log("All retries failed.");
+        }
+    });
+}
+
+
+function fetchIfExists(url, callback) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('File not found');
+            }
+            return response.json();
+        })
+        .then(data => callback(data))
+        .catch(error => console.log(`${url} not found. Waiting for generation.`));
+}
+const cursorSizeInPixels = 2**19;
+function showPolygon(lat,lng){
+    const point = turf.point([lng, lat]);
+    if (circle) { map.removeLayer(circle); }
+
+    const zoom = map.getZoom();
+    const bufferRadiusInMeters = cursorSizeInPixels / 2**zoom;
+
+    const buffered_point = turf.buffer(point, bufferRadiusInMeters, {units: "meters"});
+
+    circle = L.geoJSON(buffered_point, {
+          style: {
+                color: 'blue',
+                weight: 1,
+                fillOpacity: 0,
+                dashArray: "10, 5",
+            }
+        }
+    ).addTo(map);
+    return buffered_point
 }
 
 // Handle map click to get and send coordinates
@@ -54,10 +134,11 @@ map.on('click', function(e) {
     var lat = e.latlng.lat;
     var lng = e.latlng.lng;
     selectedCoords = {lat, lng};
+    polygon = showPolygon(lat, lng);
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 
-    if (marker) { map.removeLayer(marker); } 
+    if (marker) { map.removeLayer(marker); }
 
     marker =L.marker([lat, lng]).addTo(map)
         .bindPopup(`Coordinates: ${lat}, ${lng}`)
@@ -78,37 +159,4 @@ otsi.addEventListener('click', function(e) {
         .openPopup();
 });
 
-// Helper function for loading GeoJSON layers
-function fetchIfExists(url, callback) {
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('File not found');
-            }
-            return response.json();
-        })
-        .then(data => callback(data))
-        .catch(error => console.log(`${url} not found. Waiting for generation.`));
-}
 
-// Load and display watershed layer
-fetchIfExists('http://127.0.0.1:5000/output/converted/watershed_wgs84.geojson', data => {
-    L.geoJSON(data, {
-        style: {
-            color: 'red',
-            fillColor: 'orange',
-            fillOpacity: 0.3,
-            weight: 2
-        }
-    }).addTo(map).bindPopup("Watershed Area");
-});
-
-// Load and display river network layer
-fetchIfExists('http://127.0.0.1:5000/output/converted/river_network_wgs84.geojson', data => {
-    L.geoJSON(data, {
-        style: {
-            color: 'blue',
-            weight: 2
-        }
-    }).addTo(map).bindPopup("River Network");
-});

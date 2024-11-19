@@ -1,16 +1,21 @@
 #For calculation
+import geojson
 import numpy as np
 import geopandas as gpd
 import rasterio
+import requests
+from pyproj import CRS
 from pysheds.grid import Grid
 from rasterio.windows import from_bounds
 #For export
-from shapely.geometry import shape
+from shapely.geometry import shape, Point, Polygon
 #For coordinates reception
 import sys
-
+from convert_geojson import transformer
+from database_manager import getClosestRiverCoordinates
 # Provide the local path to the downloaded DEM GeoTIFF file
-dem_path = '/opt/homebrew/Cellar/geoserver/2.26.0/libexec/data_dir/data/raster/DTM_5m_eesti.tif' 
+#dem_path = "C:/Users/Lauri/HydroCalcVaru/DTM_5m_eesti.tif"
+dem_path = "C:/Users/Lauri/HydroCalcVaru/eesti_5m_dem.tif"
 
 # Parsing coordinates from command-line args
 if len(sys.argv) >= 3:
@@ -24,7 +29,70 @@ else:
     print("Error: Coordinates not provided.")
     sys.exit(1)
 
+point = Point(x, y)
+lon, lat = transformer.transform(x, y)
+point2 = Point(lon, lat)
 
+# Calculate the square's corners
+buffer_distance = 1
+min_x, min_y = point.x - buffer_distance, point.y - buffer_distance
+max_x, max_y = point.x + buffer_distance, point.y + buffer_distance
+
+# Create the square polygon from the bounding box
+#square_polygon = Polygon([(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x, min_y), (min_x, min_y)])
+polygon_point = point.buffer(5)
+
+url_eelis = "https://gsavalik.envir.ee/geoserver/eelis/ows?"
+url_maaparandus = "https://inspire.geoportaal.ee/geoserver/HY_eesvoolud/wfs?"
+
+params_valg = dict(
+        service= 'WFS',
+        version= '1.0.0',
+        request= 'GetFeature',
+        typename= 'eelis:valgla_vooluvesi',
+        srsname= 'EPSG:4326',
+        CQL_FILTER= f"INTERSECTS(shape,{polygon_point})",
+        maxFeatures= "10",
+        outputFormat= 'json',
+)
+
+params_eesvoolud = dict(
+    service='WFS',
+    version='2.0.0',
+    request='GetFeature',
+    typenames='HY_eesvoolud:HY.PhysicalWaters.Waterbodies_eesvool',
+    srsname='EPSG:3301',
+    CQL_FILTER= f"DWithin(geom, POINT({x} {y}), 100, meters)",
+    maxFeatures="10",
+    outputFormat='application/json',
+)
+
+params_joed = dict(
+    service='WFS',
+    version='1.0.0',
+    request='GetFeature',
+    typename='eelis:kr_vooluvesi',
+    srsname='EPSG:4326',
+    CQL_FILTER=f"INTERSECTS(shape,{polygon_point})",
+    maxFeatures="10",
+    outputFormat='application/json',
+)
+
+# Fetch data from WFS using requests
+r = requests.get(url_eelis, params=params_valg)
+data = gpd.GeoDataFrame.from_features(geojson.loads(r.content), crs="EPSG:4326")
+
+r_eesvoolud = requests.get(url_maaparandus, params=params_eesvoolud)
+
+prepare = requests.PreparedRequest()
+prepare.prepare_url(url_maaparandus, params_eesvoolud)
+print(prepare.url)
+
+#eesvoolud = gpd.GeoDataFrame.from_features(geojson.loads(r_eesvoolud.content), crs="EPSG:4326")
+#eesvoolud.to_csv("../output/csv/eesvoolud.csv", index=False)
+#print(eesvoolud["geographicalname_geographicalname_spelling_spellingofname_text"])
+#print(data.columns)
+#print(data["veekogu_tyyp"], data["pindala"], data["veekogu_nimi"])
 
 # User-defined coordinates for catchment delineation
 # x, y = 600000.017, 6450000  # hardcoded for testing script-only
@@ -47,7 +115,10 @@ try:
         dem_window = src.read(1, window=window)
         transform = src.window_transform(window)
         profile = src.profile
+        #est_proj = "+proj=lcc +lat_0=57.5175539305556 +lon_0=24 +lat_1=59.3333333333333 +lat_2=58 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+       # new_crs = CRS.from_proj4(est_proj)
         profile.update({
+            'crs': src.crs,
             'transform': transform,
             'height': dem_window.shape[0],
             'width': dem_window.shape[1],
@@ -74,7 +145,7 @@ dem_raster = grid.read_raster(temp_dem_path)
 
 # filling pits, depressions, and resolving flats
 pit_filled_dem = grid.fill_pits(dem_raster)
-flooded_dem = grid.fill_depressions(pit_filled_dem)   
+flooded_dem = grid.fill_depressions(pit_filled_dem)
 inflated_dem = grid.resolve_flats(flooded_dem)
 
 print("Filling pits, depressions, and resolving flats complete")
