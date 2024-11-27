@@ -49,6 +49,10 @@ input_river_network = "../output/epsg3301/river_network.geojson"
 output_river_network = "../output/converted/river_network_wgs84.geojson"
 input_watershed = "../output/epsg3301/watershed.geojson"
 output_watershed = "../output/converted/watershed_wgs84.geojson"
+input_watershed_buffered = "../output/epsg3301/watershed_buffered.geojson"
+output_watershed_buffered = "../output/converted/watershed_buffered_wgs84.geojson"
+
 
 convert_watershed(input_watershed, output_watershed)
+convert_watershed(input_watershed_buffered, output_watershed_buffered)
 convert_river_network(input_river_network, output_river_network)

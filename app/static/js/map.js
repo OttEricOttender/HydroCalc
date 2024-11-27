@@ -2,7 +2,7 @@ const latitude= document.getElementById('latitude');
 const longitude= document.getElementById('longitude');
 const otsi= document.getElementById('otsi');
 
-
+const url='http://127.0.0.1:5001';
 
 var map = L.map('map', {
     crs: L.CRS.EPSG3857, // default map projection, supports EPSG:4326 layers
@@ -34,12 +34,18 @@ function loadWatershedLayers() {
     if (window.watershedLayer) {
         map.removeLayer(window.watershedLayer);
     }
+    if (window.watershedLayer_buffered) {
+        map.removeLayer(window.watershedLayer);
+    }
     if (window.riverLayer) {
         map.removeLayer(window.riverLayer);
     }
+    if (window.kolvikud){
+        map.removeLayer(window.kolvikud);
+    }
 
     // Load watershed layer
-    fetchIfExists('http://127.0.0.1:5000/output/converted/watershed_wgs84.geojson', data => {
+    fetchIfExists(url.concat("/output/converted/watershed_wgs84.geojson"), data => {
         window.watershedLayer = L.geoJSON(data, {
             style: {
                 color: 'red',
@@ -50,14 +56,39 @@ function loadWatershedLayers() {
         }).addTo(map).bindPopup("Watershed Area");
     });
 
+    fetchIfExists(url.concat("/output/converted/watershed_buffered_wgs84.geojson"), data => {
+        window.watershedLayer_buffered = L.geoJSON(data, {
+            style: {
+                color: 'green',
+                fillColor: 'green',
+                fillOpacity: 0.3,
+                weight: 2
+            }
+        }).addTo(map).bindPopup("Watershed Area");
+    });
+
     // Load river network layer
-    fetchIfExists('http://127.0.0.1:5000/output/converted/river_network_wgs84.geojson', data => {
+    fetchIfExists(url.concat('/output/converted/river_network_wgs84.geojson'), data => {
         window.riverLayer = L.geoJSON(data, {
             style: {
                 color: 'blue',
                 weight: 2
             }
         }).addTo(map).bindPopup("River Network");
+    });
+
+    //kolvikud
+     fetchIfExists(url.concat('/output/epsg3301/kolvikud.geojson'), data => {
+         let layers = []
+         data.features.forEach(feature => {
+             layers.push(L.geoJSON(feature, {
+                 style: {
+                    color: feature.properties.color
+                }
+             }))
+         })
+         window.kolvikud = L.layerGroup(layers).addTo(map);
+
     });
 }
 
@@ -69,7 +100,7 @@ function findWatershed(retries = 3, delay = 500){
     const { lat, lng } = selectedCoords;
     const est97Coords = latLngToEST97(lat, lng);
 
-    fetch('http://127.0.0.1:5000/coordinates', {
+    fetch(url.concat('/coordinates'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

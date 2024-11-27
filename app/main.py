@@ -8,6 +8,7 @@ from shapely.geometry import mapping
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -36,8 +37,10 @@ def receive_coordinates():
     # Convert GeoJSON to WGS84
     subprocess.call(['python', '../scripts/convert_geojson.py'])
 
+
     return jsonify({"status": "success", "message": "Coordinates received"}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+
+    app.run(host="0.0.0.0", port=5000, debug=True)
 

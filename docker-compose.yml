@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  database-service:
+    build:
+      context: ./
+      dockerfile: docker/db/Dockerfile
+
+    image: postgis-image
+    container_name: postgis-container
+    env_file:
+      - db.env
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    volumes:
+      - ./data/kolvikud:/data
+      - ./initscripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hydro -d hydro"]
+      interval: 30s
+      retries: 5
+      timeout: 10s
+
+  main-service:
+    build:
+      context: ./
+      dockerfile: docker/main/Dockerfile
+
+    image: main-image
+    container_name: main-container
+
+    env_file:
+      - db.env
+    volumes:
+      - ./scripts:/hydro/scripts
+      - ./app:/hydro/app
+    ports:
+      - 5001:5000
+    expose:
+      - 5432
+    depends_on:
+      database-service:
+        condition: service_healthy
+    restart: on-failure

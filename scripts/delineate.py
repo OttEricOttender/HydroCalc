@@ -1,21 +1,39 @@
 #For calculation
+import json
+import urllib
+from sqlite3 import DatabaseError
+
 import geojson
 import numpy as np
 import geopandas as gpd
 import rasterio
 import requests
-from pyproj import CRS
+from pyproj import CRS, Transformer
 from pysheds.grid import Grid
 from rasterio.windows import from_bounds
 #For export
 from shapely.geometry import shape, Point, Polygon
+from shapely import to_geojson
 #For coordinates reception
 import sys
-from convert_geojson import transformer
-from database_manager import getClosestRiverCoordinates
+#For database connection
+import psycopg2
+from config import load_config
+import os
+
+transformer = Transformer.from_crs("EPSG:3301", "EPSG:4326", always_xy=True)
+
+
 # Provide the local path to the downloaded DEM GeoTIFF file
-#dem_path = "C:/Users/Lauri/HydroCalcVaru/DTM_5m_eesti.tif"
-dem_path = "C:/Users/Lauri/HydroCalcVaru/eesti_5m_dem.tif"
+dem_path = '../data/DTM_5m_eesti.tif'
+if not os.path.exists(dem_path):
+    print("Raster file missing. Downloading...")
+    urllib.request.urlretrieve(
+        "https://geoportaal.maaamet.ee/index.php?lang_id=1&plugin_act=otsing&andmetyyp=mp_korgusmudelid&dl=1&f=DTM_5m_eesti.tif&page_id=614",
+        dem_path
+    )
+    print("Raster file downloaded.")
+
 
 # Parsing coordinates from command-line args
 if len(sys.argv) >= 3:
@@ -33,11 +51,13 @@ point = Point(x, y)
 lon, lat = transformer.transform(x, y)
 point2 = Point(lon, lat)
 
+
+
 # Calculate the square's corners
 buffer_distance = 1
 min_x, min_y = point.x - buffer_distance, point.y - buffer_distance
 max_x, max_y = point.x + buffer_distance, point.y + buffer_distance
-
+"""
 # Create the square polygon from the bounding box
 #square_polygon = Polygon([(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x, min_y), (min_x, min_y)])
 polygon_point = point.buffer(5)
@@ -93,12 +113,13 @@ print(prepare.url)
 #print(eesvoolud["geographicalname_geographicalname_spelling_spellingofname_text"])
 #print(data.columns)
 #print(data["veekogu_tyyp"], data["pindala"], data["veekogu_nimi"])
-
+"""
 # User-defined coordinates for catchment delineation
 # x, y = 600000.017, 6450000  # hardcoded for testing script-only
 
 # Define a window around the coordinates 
 buffer = 7500  # meters
+
 
 try:
     # Open the DEM using rasterio
@@ -115,8 +136,8 @@ try:
         dem_window = src.read(1, window=window)
         transform = src.window_transform(window)
         profile = src.profile
-        #est_proj = "+proj=lcc +lat_0=57.5175539305556 +lon_0=24 +lat_1=59.3333333333333 +lat_2=58 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-       # new_crs = CRS.from_proj4(est_proj)
+        est_proj = "+proj=lcc +lat_0=57.5175539305556 +lon_0=24 +lat_1=59.3333333333333 +lat_2=58 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+        new_crs = CRS.from_proj4(est_proj)
         profile.update({
             'crs': src.crs,
             'transform': transform,
@@ -171,6 +192,7 @@ print(f"Snapped coordinates: {x_snap}, {y_snap}")
 # Delineate the catchment based on snapped coordinates and flow direction
 catch = grid.catchment(x=x_snap, y=y_snap, fdir=flow_direction, dirmap=dirmap, xytype='coordinate')
 
+
 # clipping the DEM to the catchment area (needed for river_network later)
 grid.clip_to(catch)
 
@@ -184,6 +206,8 @@ branches = grid.extract_river_network(flow_direction, acc > 50, dirmap=dirmap)
 # Polygonize the catchment for GeoDataFrame conversion
 shapes = grid.polygonize(catch.astype('int32'))
 
+
+
 # conversion of the polygonized shapes into GeoJSON-like features
 geojson_features = []
 for geom, value in shapes:
@@ -195,18 +219,84 @@ for geom, value in shapes:
         }
         geojson_features.append(feature)
 
-
 # Convert to GeoDataFrame for export
 gdf_catchment = gpd.GeoDataFrame.from_features(geojson_features, crs='EPSG:3301')
+gdf_catchment_buffered = gpd.GeoDataFrame.from_features(geojson_features, crs='EPSG:3301').buffer(5).simplify(10)
+gdf_catchment_4326 = gdf_catchment_buffered.to_crs(epsg=4326)
 
 # Save the result as GeoJSON
 gdf_catchment.to_file('../output/epsg3301/watershed.geojson', driver='GeoJSON')
-
+gdf_catchment_buffered.to_file('../output/epsg3301/watershed_buffered.geojson', driver='GeoJSON')
 print("Watershed delineation saved as GeoJSON")
 
 
 # Convert the river network to a GeoDataFrame for export, saving result as GeoJSON
 gdf_river_network = gpd.GeoDataFrame.from_features(branches, crs='EPSG:3301')
 gdf_river_network.to_file('../output/epsg3301/river_network.geojson', driver='GeoJSON')
-
 print("River network saved as GeoJSON")
+
+
+catchment = gdf_catchment_4326[0]
+print(catchment)
+tabelid = ["e_301_muu_kolvik_a", "e_301_muu_kolvik_ka", "e_301_muu_kolvik_p", "e_302_ou_a",
+           "e_303_haritav_maa_a", "e_304_lage_a", "e_305_puittaimestik_a",
+           "e_305_puittaimestik_j", "e_305_puittaimestik_p", "e_306_margala_a",
+           " e_306_margala_ka", "e_307_turbavali_a"]
+
+color_map = {
+    "e_301_muu_kolvik_a": "#FF0000",  # Red
+    "e_301_muu_kolvik_ka": "#00FF00",  # Green
+    "e_301_muu_kolvik_p": "#0000FF",  # Blue
+    "e_302_ou_a": "#FFFF00",  # Yellow
+    "e_303_haritav_maa_a": "#FF00FF",  # Magenta
+    "e_304_lage_a": "#00FFFF",  # Cyan
+    "e_305_puittaimestik_a": "#FFA500",  # Orange
+    "e_305_puittaimestik_j": "#800080",  # Purple
+    "e_305_puittaimestik_p": "#FFC0CB",  # Pink
+    "e_306_margala_a": "#A52A2A",  # Brown
+    "e_306_margala_ka": "#008000",  # Dark Green
+    "e_307_turbavali_a": "#808080",  # Gray
+}
+
+results = []
+for tabel in tabelid:
+    try:
+        config = load_config()
+        with psycopg2.connect(**config) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"""SELECT ST_AsGeoJSON(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)), 9)
+                        FROM public.{tabel} as area
+                        WHERE ST_Intersects(area.geom, ST_GeomFromText(%s, 4326))
+                        AND NOT ST_IsEmpty(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)));
+                    """, (str(catchment), str(catchment), str(catchment))
+                )
+                result = cursor.fetchall()
+                if len(result) > 0:
+                    results.append((tabel, result))  # Store table name with result
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+
+kolvikud = []
+for tabel, result in results:
+
+    color = color_map.get(tabel.strip(), "#000000")
+    geom = result  # This should be the geometry
+    geom_dict = json.loads(result[0][0])
+
+    feature = {
+        "type": "Feature",
+        "geometry": geom_dict,
+        "properties": {
+            "value": 1.0,
+            "name": tabel,
+            "color": color,
+            }
+    }
+    kolvikud.append(feature)
+
+# Convert the collected features into a GeoDataFrame
+gdf_kolvikud = gpd.GeoDataFrame.from_features(kolvikud, crs='EPSG:3301')
+
+# Export the GeoDataFrame to a shapefile
+gdf_kolvikud.to_file('../output/epsg3301/kolvikud.geojson', driver='GeoJSON')
