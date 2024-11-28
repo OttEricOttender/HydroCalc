@@ -2,6 +2,10 @@ const latitude= document.getElementById('latitude');
 const longitude= document.getElementById('longitude');
 const otsi= document.getElementById('otsi');
 
+const tutorialBtn= document.getElementById('tutorial_button');
+const closeBtn= document.getElementById('close_tutorial');
+const tutorial= document.getElementById('tutorial');
+
 const url='http://127.0.0.1:5001';
 
 var map = L.map('map', {
@@ -80,8 +84,8 @@ fetch(url.concat('/coordinates'), {
 
 // Handle map click to get and send coordinates
 map.on('click', function(e) {
-    var lat = e.latlng.lat;
-    var lng = e.latlng.lng;
+    var lat = (e.latlng.lat).toFixed(4);
+    var lng = (e.latlng.lng).toFixed(4);
     selectedCoords = {lat, lng};
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
@@ -216,6 +220,13 @@ function hideStatus() {
     statusDiv.style.display = 'none'; 
 }
 
+tutorialBtn.addEventListener("click", () => {
+    tutorial.classList.add("open");
+});
+
+closeBtn.addEventListener("click", () => {
+    tutorial.classList.remove("open");
+});
 
 
 updateLayers();
