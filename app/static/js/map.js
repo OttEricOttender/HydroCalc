@@ -84,8 +84,8 @@ fetch(url.concat('/coordinates'), {
 
 // Handle map click to get and send coordinates
 map.on('click', function(e) {
-    var lat = (e.latlng.lat).toFixed(4);
-    var lng = (e.latlng.lng).toFixed(4);
+    var lat = e.latlng.lat;
+    var lng = e.latlng.lng;
     selectedCoords = {lat, lng};
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
@@ -93,7 +93,7 @@ map.on('click', function(e) {
     if (marker) { map.removeLayer(marker); } 
 
     marker =L.marker([lat, lng]).addTo(map)
-        .bindPopup(`Koordinaadid: ${lat}, ${lng}`)
+        .bindPopup(`Koordinaadid: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
         .openPopup();
 });
 
@@ -174,7 +174,7 @@ function updateLayers() {
             }).addTo(map).bindPopup("Kasutaja sisestatud koordinaadid");
             circleMarkers.push(userCircle);
     
-            document.getElementById('user-coords').innerText = `Kasutaja sisestatud: (${userCoords.lat.toFixed(5)}, ${userCoords.lon.toFixed(5)})`;
+            document.getElementById('user-coords').innerText = `Kasutaja sisestatud: (${userCoords.lat.toFixed(4)}, ${userCoords.lon.toFixed(4)})`;
         }
     
         if (snappedCoords) {
@@ -184,7 +184,7 @@ function updateLayers() {
             }).addTo(map).bindPopup("Vooluveekogu koordinaadid");
             circleMarkers.push(snappedCircle);
     
-            document.getElementById('snapped-coords').innerText = `Vooluveekogu: (${snappedCoords.lat.toFixed(5)}, ${snappedCoords.lon.toFixed(5)})`;
+            document.getElementById('snapped-coords').innerText = `Vooluveekogu: (${snappedCoords.lat.toFixed(4)}, ${snappedCoords.lon.toFixed(4)})`;
         }
     
         document.getElementById('surface-area').innerHTML = `Valgala pindala: ${surfaceArea} km<sup>2</sup>`;
