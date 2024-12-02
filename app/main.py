@@ -2,9 +2,6 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import subprocess
 
-from shapely import Point
-from shapely.geometry import mapping
-
 app = Flask(__name__)
 CORS(app)
 

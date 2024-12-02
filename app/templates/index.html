@@ -3,21 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watershed Delineation Map</title>
+    <title>Sademevee Abimees</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.2/proj4.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
 </head>
+
 <body>
     <div id="infTab">
-        <label for="latitude">Latitude</label>
+        <label for="latitude">Laiuskraad</label>
         <input type="text" id="latitude" name="latitude"><br>
-        <label for="longitude">Longitude</label>
+        <label for="longitude">Pikkuskraad</label>
         <input type="text" id="longitude" name="longitude"><br>
         <input type="submit" value="Otsi punkti" id="otsi"><br>
         <button id="button" onclick="findWatershed()">Piiritle</button>
+        <div id="metadata-panel">
+            <div>
+              <label>
+                <input type="radio" name="polygonStyle" value="smooth" id="smooth" checked>
+                Sujuv
+              </label>
+              <label>
+                <input type="radio" name="polygonStyle" value="rugged" id="rugged">
+                Täpne
+              </label>
+            </div>
+            <p id="andmed">Koordinaadid:</p>
+            <div class="info-item">
+                <div class="color-dot" id="dot-blue"></div>
+                <div id="user-coords">Kasutaja sisestatud: </div>
+            </div>
+            <div class="info-item">
+                <div class="color-dot" id="dot-red"></div>
+                <div id="snapped-coords">Vooluveekogu: </div>
+            </div>
+            <p id="andmed">Lisainfo:</p>
+            <div id="surface-area">Valgala pindala: </div>
+            <div id="status">Arvutab...</div>
+        </div>
+        <button id="tutorial_button" onclick="">?</button>
+        <div class="tutorial" id="tutorial">
+            <h2 id="tutorial_heading">Teretulemast veebirakendusse Svam.ee!</h2>
+            <p id="tutorial_text">
+                Svam.ee on Eesti esimene hüdroloogiliste parameetrite arvutustarkvara.
+                Veeblehe kasutamisega alustamiseks järgi neid samme: <br><br>
+                1a) Sisesta soovitud punkti koordinaadid üleval vasakul olevatel väljadel. Seejärel kliki "Otsi punkti".<br>
+                või <br>
+                1b) Vali punkt kaardilt. <br>
+                2) Kliki "Piiritle". <br><br>
+
+                Peale "Piiritle" klikkimist hakkab veebirakendus Sinu soovitud punktiga seotud
+                hüdroloogilisi parameetreid arvutama ja kuvab need vasakul oleval infoväljal. <br><br>
+
+                Peale kasutamist on sul võimalik kogu informatsioon ka PDF-ina eksportida. <br><br>
+
+                Head kasutamist!
+            </p>
+            <button id="close_tutorial">Sule</button>
+        </div>
     </div>
     <div id="map"></div>
 </body>

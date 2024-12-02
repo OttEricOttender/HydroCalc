@@ -278,25 +278,66 @@ for tabel in tabelid:
         print(error)
 
 kolvikud = []
+
+print(results)
 for tabel, result in results:
 
     color = color_map.get(tabel.strip(), "#000000")
-    geom = result  # This should be the geometry
-    geom_dict = json.loads(result[0][0])
+    for geom_json in result:
+        if geom_json[0]:  # Ensure the geometry is not None
+            geom_dict = json.loads(geom_json[0])  # Parse the GeoJSON string into a dictionary
 
-    feature = {
-        "type": "Feature",
-        "geometry": geom_dict,
-        "properties": {
-            "value": 1.0,
-            "name": tabel,
-            "color": color,
+            feature = {
+                "type": "Feature",
+                "geometry": geom_dict,
+                "properties": {
+                    "value": 1.0,
+                    "name": tabel,
+                    "color": color,
+                }
             }
-    }
-    kolvikud.append(feature)
+            kolvikud.append(feature)
 
 # Convert the collected features into a GeoDataFrame
 gdf_kolvikud = gpd.GeoDataFrame.from_features(kolvikud, crs='EPSG:3301')
 
 # Export the GeoDataFrame to a shapefile
 gdf_kolvikud.to_file('../output/epsg3301/kolvikud.geojson', driver='GeoJSON')
+
+
+# Calculating the surface area
+total_area_sqkm = (gdf_catchment['geometry'].area.sum()) / 1e6
+user_coords = (x,y)
+snapped_coords = (x_snap, y_snap)
+print(gdf_kolvikud["name"])
+# Prepare metadata dictionary
+metadata = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "surface_area_sqkm": total_area_sqkm,
+            },
+             "type": "Feature",
+            "geometry": {"type": "Point", "user_coords": user_coords},
+        },
+        {
+            "type": "Feature",
+            "geometry": {"type": "Point", "snapped_coords": snapped_coords}
+        },
+        {
+            "type": "Feature",
+            "properties": {
+
+            }
+        }
+
+    ]
+}
+
+# Save metadata as GeoJSON
+with open('../output/epsg3301/metadata.geojson', 'w') as f:
+    json.dump(metadata, f)
+
+print("Metadata saved as GeoJSON")

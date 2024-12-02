@@ -44,13 +44,34 @@ def convert_river_network(input_path, output_path):
 
     print(f"Converted {input_path} from EPSG:3301 to WGS84 and saved as {output_path}")
 
+
+def convert_metadata_coords(input_path, output_path):
+    with open(input_path, 'r') as file:
+        metadata = json.load(file)
+
+    for feature in metadata['features']:
+        if "user_coords" in feature['geometry']:
+            # Convert user coordinates
+            user_x, user_y = feature['geometry']['user_coords']
+            user_latlon = convert_coords(user_x, user_y)
+            feature['geometry']['user_coords'] = {"lat": user_latlon[1], "lon": user_latlon[0]}
+
+        elif "snapped_coords" in feature['geometry']:
+            snap_x, snap_y = feature['geometry']['snapped_coords']
+            snap_latlon = convert_coords(snap_x, snap_y)
+            feature['geometry']['snapped_coords'] = {"lat": snap_latlon[1], "lon": snap_latlon[0]}
+
+    with open(output_path, 'w') as file:
+        json.dump(metadata, file)
+
+
 # Paths for input and output
 input_river_network = "../output/epsg3301/river_network.geojson"
-output_river_network = "../output/converted/river_network_wgs84.geojson"
+output_river_network = "../output/converted/river_network.geojson"
 input_watershed = "../output/epsg3301/watershed.geojson"
-output_watershed = "../output/converted/watershed_wgs84.geojson"
+output_watershed = "../output/converted/watershed.geojson"
 input_watershed_buffered = "../output/epsg3301/watershed_buffered.geojson"
-output_watershed_buffered = "../output/converted/watershed_buffered_wgs84.geojson"
+output_watershed_buffered = "../output/converted/watershed_buffered.geojson"
 
 
 convert_watershed(input_watershed, output_watershed)

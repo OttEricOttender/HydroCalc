@@ -7,8 +7,8 @@
   margin-right: 20px auto;
 }
 
-#button {
-  background-color: rgb(0, 114, 206); 
+button {
+  background-color: rgb(0, 114, 206);
   align-self: center;
   width: 31%;
   border: none;
@@ -22,8 +22,8 @@
   border-radius: 10px;
   }
 
-#button:hover {
-  background-color: rgb(0, 75, 160); 
+button:hover {
+  background-color: rgb(0, 75, 160);
   }
 
 body {
@@ -63,11 +63,102 @@ body {
 }
 
 #infTab > #otsi:hover{
-  background-color: rgb(0, 75, 160); 
+  background-color: rgb(0, 75, 160);
 }
 
+#tutorial{
+  background-color: white;
+  opacity: 0;
+  position:fixed;
+  top: 15%;
+  left:30.47%;
+  right:0;
+  bottom: 12%;
+  transition: all 0.5 ease-in-out;
+  z-index: -1;
 
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content: center;
+}
+
+#tutorial.open{
+  opacity: 0.75;
+  z-index: 999;
+}
+
+#tutorial_heading{
+  font-size:x-large;
+}
+
+#tutorial_text{
+  font-size: large;
+  font-weight: 570;
+  margin-left:7%;
+  margin-right:7%;
+}
+
+#close_tutorial {
+  width:20%;
+  padding: 0px 0px;
+}
+
+#tutorial_button{
+  position:absolute;
+  width: 3%;
+  height: 6%;
+  left:95%;
+  top:2%;
+  padding: 0px 0px;
+  z-index: 999;
+}
 
 label {
   font-weight:700;
+}
+
+#metadata-panel {
+  background-color: white;
+  width: 77.5%;
+  padding: 10px;
+  padding-top: 1%;
+  margin-top: 10px;
+  border-radius: 5px;
+  margin-left: 1%;
+  margin-right: 10%;
+  margin-bottom:10px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid;
+  border-radius: 50%;
+  margin-right: 5px;
+  background-color: transparent;
+}
+
+#dot-blue {
+  border-color: blue;
+}
+
+#dot-red {
+  border-color: red;
+}
+
+#andmed {
+  font-weight: bold;
+}
+
+#status {
+  display: none;
+  color: green; font-weight: bold;
+  margin-bottom: 10px;
 }
