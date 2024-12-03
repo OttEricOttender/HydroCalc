@@ -237,22 +237,18 @@ print("River network saved as GeoJSON")
 
 
 catchment = gdf_catchment_4326[0]
-print(catchment)
-tabelid = ["e_301_muu_kolvik_a", "e_301_muu_kolvik_ka", "e_301_muu_kolvik_p", "e_302_ou_a",
-           "e_303_haritav_maa_a", "e_304_lage_a", "e_305_puittaimestik_a",
-           "e_305_puittaimestik_j", "e_305_puittaimestik_p", "e_306_margala_a",
+
+tabelid = ["e_301_muu_kolvik_a", "e_301_muu_kolvik_ka", "e_302_ou_a",
+           "e_303_haritav_maa_a", "e_304_lage_a", "e_305_puittaimestik_a", "e_306_margala_a",
            " e_306_margala_ka", "e_307_turbavali_a"]
 
 color_map = {
     "e_301_muu_kolvik_a": "#FF0000",  # Red
     "e_301_muu_kolvik_ka": "#00FF00",  # Green
-    "e_301_muu_kolvik_p": "#0000FF",  # Blue
     "e_302_ou_a": "#FFFF00",  # Yellow
     "e_303_haritav_maa_a": "#FF00FF",  # Magenta
     "e_304_lage_a": "#00FFFF",  # Cyan
     "e_305_puittaimestik_a": "#FFA500",  # Orange
-    "e_305_puittaimestik_j": "#800080",  # Purple
-    "e_305_puittaimestik_p": "#FFC0CB",  # Pink
     "e_306_margala_a": "#A52A2A",  # Brown
     "e_306_margala_ka": "#008000",  # Dark Green
     "e_307_turbavali_a": "#808080",  # Gray
@@ -268,7 +264,7 @@ for tabel in tabelid:
                     f"""SELECT ST_AsGeoJSON(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)), 9)
                         FROM public.{tabel} as area
                         WHERE ST_Intersects(area.geom, ST_GeomFromText(%s, 4326))
-                        AND NOT ST_IsEmpty(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)));
+                        AND NOT ST_IsEmpty(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)))
                     """, (str(catchment), str(catchment), str(catchment))
                 )
                 result = cursor.fetchall()
@@ -278,10 +274,7 @@ for tabel in tabelid:
         print(error)
 
 kolvikud = []
-
-print(results)
 for tabel, result in results:
-
     color = color_map.get(tabel.strip(), "#000000")
     for geom_json in result:
         if geom_json[0]:  # Ensure the geometry is not None
@@ -309,7 +302,18 @@ gdf_kolvikud.to_file('../output/epsg3301/kolvikud.geojson', driver='GeoJSON')
 total_area_sqkm = (gdf_catchment['geometry'].area.sum()) / 1e6
 user_coords = (x,y)
 snapped_coords = (x_snap, y_snap)
-print(gdf_kolvikud["name"])
+
+# Komineerime sama nimega kolvikud
+gdf_kolvikud_grouped = gdf_kolvikud.dissolve(by="name", as_index=False)
+gdf_kolvikud_grouped['area_sqkm'] = gdf_kolvikud_grouped['geometry'].area.sum() / 1e6  # m² to km²
+# Liidame sama nimega kolvikute pindalad
+
+# Arvutame suhtelise pindala
+gdf_kolvikud_grouped['proportion'] = gdf_kolvikud_grouped['area_sqkm'] / total_area_sqkm * 100
+
+# Output results
+print(gdf_kolvikud_grouped[['name', 'area_sqkm', 'proportion']])
+
 # Prepare metadata dictionary
 metadata = {
     "type": "FeatureCollection",
@@ -318,6 +322,7 @@ metadata = {
             "type": "Feature",
             "properties": {
                 "surface_area_sqkm": total_area_sqkm,
+
             },
              "type": "Feature",
             "geometry": {"type": "Point", "user_coords": user_coords},
@@ -326,15 +331,24 @@ metadata = {
             "type": "Feature",
             "geometry": {"type": "Point", "snapped_coords": snapped_coords}
         },
-        {
-            "type": "Feature",
-            "properties": {
-
-            }
-        }
-
     ]
 }
+
+# Add group details to metadata
+for _, row in gdf_kolvikud_grouped.iterrows():
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "group_name": row.get("name"),
+            "area_sqkm": row['area_sqkm'],
+            "proportion": row['proportion']
+        },
+        "geometry": None
+    }
+    metadata['features'].append(feature)
+
+
+print(json.dumps(metadata, indent=2))
 
 # Save metadata as GeoJSON
 with open('../output/epsg3301/metadata.geojson', 'w') as f:

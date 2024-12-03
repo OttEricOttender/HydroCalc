@@ -122,11 +122,10 @@ otsi.addEventListener('click', function(e) {
         .bindPopup(`Koordinaadid: ${lat}, ${lng}`)
         .openPopup();
 });
-
-function updateLayers() {
+ function updateLayers() {
 
     // Load and display watershed layer
-   // loadPolygonWithStyle()
+    // loadPolygonWithStyle()
 
     // Load and display river network layer
     fetchIfExists(url.concat('/output/converted/river_network.geojson'), data => {
@@ -143,16 +142,40 @@ function updateLayers() {
         const features = data.features;
 
         // Find the surface area from the first feature's properties
-        const surfaceArea = features[0].properties.surface_area_sqkm;
+        const surfaceArea = Math.round(features[0].properties.surface_area_sqkm * 100)/100;
 
         // Extract coordinates for user and snapped points
         let userCoords, snappedCoords;
+        const kolvikudDiv = document.querySelector('.kolvikud');
+        if (kolvikudDiv){
+            while (kolvikudDiv.firstChild){
+                kolvikudDiv.removeChild(kolvikudDiv.firstChild);
+            }
+        }
 
         features.forEach(feature => {
-            if (feature.geometry.user_coords) {
-                userCoords = feature.geometry.user_coords;
-            } else if (feature.geometry.snapped_coords) {
-                snappedCoords = feature.geometry.snapped_coords;
+            if (feature.geometry) {
+                if (feature.geometry.user_coords) {
+                    userCoords = feature.geometry.user_coords;
+                } else if (feature.geometry.snapped_coords) {
+                    snappedCoords = feature.geometry.snapped_coords;
+                }
+            }
+
+             if (feature.properties && feature.properties.group_name && feature.properties.area_sqkm) {
+                // Create a new div for each feature's area
+                const areaDiv = document.createElement('div');
+                areaDiv.classList.add('kolvikud-item');  // You can style this class as needed
+
+                // Add group name and area to the div
+                areaDiv.innerHTML =
+                    `
+                        ${feature.properties.group_name}: ${feature.properties.proportion.toFixed(2)} %
+                        
+                    `;
+
+                // Append the new div to the kolvikud container
+                kolvikudDiv.appendChild(areaDiv);
             }
         });
 
@@ -183,16 +206,16 @@ function updateLayers() {
     map.removeLayer(marker);
 
     //kõlvikud
-     fetchIfExists(url.concat('/output/epsg3301/kolvikud.geojson'), data => {
-         let layers = []
-         data.features.forEach(feature => {
-             layers.push(L.geoJSON(feature, {
-                 style: {
+    fetchIfExists(url.concat('/output/epsg3301/kolvikud.geojson'), data => {
+        let layers = []
+        data.features.forEach(feature => {
+            layers.push(L.geoJSON(feature, {
+                style: {
                     color: feature.properties.color
                 }
-             }))
-         })
-         window.kolvikud = L.layerGroup(layers).addTo(map);
+            }))
+        })
+        window.kolvikud = L.layerGroup(layers).addTo(map);
 
     });
 }
@@ -200,16 +223,23 @@ function updateLayers() {
 
 
 function fetchIfExists(url, callback) {
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('File not found');
-            }
-            return response.json();
-        })
-        .then(data => callback(data))
-        .catch(error => console.log(`${url} not found. Waiting for generation.`));
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('File not found');
+                }
+                return response.json();
+            })
+            .then(data => {
+                callback(data);
+            })
+            .catch(error => {
+                // Log the error and keep checking
+                console.log(`${url} not found. Waiting for generation...`, error);
+            });
 }
+
+
 const cursorSizeInPixels = 2**19;
 function showPolygon(lat,lng){
     const point = turf.point([lng, lat]);
