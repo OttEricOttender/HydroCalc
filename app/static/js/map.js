@@ -40,7 +40,7 @@ function latLngToEST97(lat, lng) {
 
 function findWatershed(retries = 3, delay = 500){
     if (!selectedCoords) {
-        alert("Please select a point on the map.");
+        alert("Palun vali punkt kaardil.");
         return;
     }
     const { lat, lng } = selectedCoords;

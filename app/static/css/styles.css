@@ -8,7 +8,7 @@
 }
 
 button {
-  background-color: rgb(0, 114, 206);
+  background-color: rgb(0, 114, 206); 
   align-self: center;
   width: 31%;
   border: none;
@@ -23,7 +23,7 @@ button {
   }
 
 button:hover {
-  background-color: rgb(0, 75, 160);
+  background-color: rgb(0, 75, 160); 
   }
 
 body {
@@ -142,7 +142,11 @@ label {
   border: 2px solid;
   border-radius: 50%;
   margin-right: 5px;
+<<<<<<< HEAD
   background-color: transparent;
+=======
+  background-color: transparent; 
+>>>>>>> master
 }
 
 #dot-blue {
@@ -158,7 +162,14 @@ label {
 }
 
 #status {
+<<<<<<< HEAD
   display: none;
   color: green; font-weight: bold;
   margin-bottom: 10px;
 }
+=======
+  display: none; 
+  color: green; font-weight: bold; 
+  margin-bottom: 10px;
+}
+>>>>>>> master

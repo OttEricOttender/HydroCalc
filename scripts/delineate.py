@@ -1,3 +1,7 @@
+#For coordinates reception
+import sys
+#For Raster DEM data
+import urllib.request
 #For calculation
 import json
 import urllib

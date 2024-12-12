@@ -1,0 +1,15 @@
+# Cypress Instructions for Hydro Project # 
+
+## Install cypress ##
+Run the following command from the project directory:
+```bash
+npx cypress
+```
+
+## Open Cypress ## 
+Run the following command from the project directory:
+```bash
+npx cypress open
+```
+
+"Navigate to the E2E testing section in the Cypress application and execute `spec.cy.js` using your preferred browser."

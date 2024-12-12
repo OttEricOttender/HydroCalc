@@ -1,5 +1,6 @@
 import json
 from pyproj import Transformer
+import os
 
 # setting up the transformer (EPSG:3301 -> EPSG:4326)
 transformer = Transformer.from_crs("EPSG:3301", "EPSG:4326", always_xy=True)
@@ -58,7 +59,6 @@ def convert_metadata_coords(input_path, output_path):
             user_x, user_y = feature['geometry']['user_coords']
             user_latlon = convert_coords(user_x, user_y)
             feature['geometry']['user_coords'] = {"lat": user_latlon[1], "lon": user_latlon[0]}
-
         elif "snapped_coords" in feature['geometry']:
             snap_x, snap_y = feature['geometry']['snapped_coords']
             snap_latlon = convert_coords(snap_x, snap_y)
