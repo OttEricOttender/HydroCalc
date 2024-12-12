@@ -1,4 +1,6 @@
-# Hydro project with pysheds #
+# Hydro project with pysheds#
+> :warning: **Deprecated:** These instructions aren't up to date.
+
 
 ## Setup Instructions ##
 
