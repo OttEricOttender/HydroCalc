@@ -3,6 +3,32 @@
 ## Prerequisites ##
 
 __1.__ Docker must be installed and running.\
+__2.__ It is highly recommended to place the [DEM raster file](#raster) (DTM_5m_eesti.tif) in the `data/` folder to speed up the build time.
+__NB!__ You need roughly 14 GB of storage space to run the program with Docker.
+
+
+## Running the app ## 
+
+In the project root, simply execute the following command:
+```bash
+docker compose up --build
+```
+Once the build has completed, the application will be accessible at http://127.0.0.1:5001.\
+You can still edit the files in the `app/` and `script/` folders while the services are running.\
+Next time, you can simply run the services with:
+```bash
+docker compose up
+```
+
+
+
+
+
+> :warning: **Old Instructions:**
+
+## Prerequisites ##
+
+__1.__ Docker must be installed and running.\
 __2.__ The project includes all necessary files, except for the DEM raster file (DTM_5m_eesti.tif).\
 Before proceeding, read about the DEM [Raster File Handling](#raster).
 
