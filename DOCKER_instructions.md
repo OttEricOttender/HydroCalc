@@ -3,7 +3,7 @@
 ## Prerequisites ##
 
 __1.__ Docker must be installed and running.\
-__2.__ It is highly recommended to place the [DEM raster file](#raster) (DTM_5m_eesti.tif) in the `data/` folder to speed up the build time.
+__2.__ It is highly recommended to place the [DEM raster file](#raster) (DTM_5m_eesti.tif) in the `data/` folder to speed up the build time.\
 __NB!__ You need roughly 14 GB of storage space to run the program with Docker.
 
 
