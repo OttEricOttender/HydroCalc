@@ -1,3 +1,5 @@
 pysheds==0.4
 flask==3.0.3
 flask-cors==5.0.0
+psycopg2==2.9.10
+configparser==7.1.0

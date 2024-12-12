@@ -6,6 +6,9 @@ const tutorialBtn= document.getElementById('tutorial_button');
 const closeBtn= document.getElementById('close_tutorial');
 const tutorial= document.getElementById('tutorial');
 
+let smoothCatchment = false;
+
+
 const url='http://127.0.0.1:5001';
 
 var map = L.map('map', {
@@ -20,7 +23,11 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 let selectedCoords = null;
+let polygon = null;
 let marker = null;
+let circle = null;
+let circleMarkers = [];
+let layers =[];
 
 // Convert latitude/longitude to EPSG:3301
 function latLngToEST97(lat, lng) {
@@ -30,57 +37,61 @@ function latLngToEST97(lat, lng) {
     return { easting: est97Coords[0], northing: est97Coords[1] };
 }
 
-function findWatershed() {
+
+function findWatershed(retries = 3, delay = 500){
     if (!selectedCoords) {
         alert("Palun vali punkt kaardil.");
         return;
     }
-const { lat, lng } = selectedCoords;
-const est97Coords = latLngToEST97(lat, lng);
-const rasterBounds = {
-    minEasting: 365000.0,
-    maxEasting: 740000.0,
-    minNorthing: 6375000.0,
-    maxNorthing: 6635000.0
-}
-// Checking boundaries
-if (
-    est97Coords.easting < rasterBounds.minEasting ||
-    est97Coords.easting > rasterBounds.maxEasting ||
-    est97Coords.northing < rasterBounds.minNorthing ||
-    est97Coords.northing > rasterBounds.maxNorthing
-) {
-    alert("Palun vali punkt, mis jääb Eesti piiridesse.");
-    selectedCoords = null;
-    return;
-}
-performCleanup();
-showStatus("Arvutab... Palun oodake.");
-fetch(url.concat('/coordinates'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        latitude: lat,
-        longitude: lng,
-        easting: est97Coords.easting,
-        northing: est97Coords.northing
+    const { lat, lng } = selectedCoords;
+    const est97Coords = latLngToEST97(lat, lng);
+    const rasterBounds = {
+        minEasting: 365000.0,
+        maxEasting: 740000.0,
+        minNorthing: 6375000.0,
+        maxNorthing: 6635000.0
+    }
+
+    // Checking boundaries
+    if (
+        est97Coords.easting < rasterBounds.minEasting ||
+        est97Coords.easting > rasterBounds.maxEasting ||
+        est97Coords.northing < rasterBounds.minNorthing ||
+        est97Coords.northing > rasterBounds.maxNorthing
+    ) {
+        alert("Palun vali punkt, mis jääb Eesti piiridesse.");
+        selectedCoords = null;
+        return;
+    }
+    performCleanup();
+    showStatus("Arvutab... Palun oodake.");
+
+    fetch(url.concat('/coordinates'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            latitude: lat,
+            longitude: lng,
+            easting: est97Coords.easting,
+            northing: est97Coords.northing,
+        })
     })
-})
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Request not ready")
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
         showStatus("Arvutamine valmis.");
         updateLayers(); // reloading layers dynamically
         setTimeout(hideStatus, 3000);
-
     })
-    .catch(error => console.error('Error:', error));
-    }
+    .catch(error => {
+        console.error('Error:', error);
+        if (retries > 0) {
+            setTimeout(() => findWatershed(retries - 1, delay * 2), delay);
+        } else {
+            console.log("All retries failed.");
+        }
+    });
+}
 
 // Handle map click to get and send coordinates
 map.on('click', function(e) {
@@ -90,7 +101,7 @@ map.on('click', function(e) {
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 
-    if (marker) { map.removeLayer(marker); } 
+    if (marker) { map.removeLayer(marker); }
 
     marker =L.marker([lat, lng]).addTo(map)
         .bindPopup(`Koordinaadid: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
@@ -105,38 +116,16 @@ otsi.addEventListener('click', function(e) {
 
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 
-    if (marker) { map.removeLayer(marker); } 
+    if (marker) { map.removeLayer(marker); }
 
     marker =L.marker([lat, lng]).addTo(map)
         .bindPopup(`Koordinaadid: ${lat}, ${lng}`)
         .openPopup();
 });
+ function updateLayers() {
 
-// Helper function for loading GeoJSON layers
-function fetchIfExists(url, callback) {
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('File not found');
-            }
-            return response.json();
-        })
-        .then(data => callback(data))
-        .catch(error => console.log(`${url} not found. Waiting for generation.`));
-}
-
-function updateLayers() {
     // Load and display watershed layer
-    fetchIfExists(url.concat('/output/converted/watershed.geojson'), data => {
-        L.geoJSON(data, {
-            style: {
-                color: 'red',
-                fillColor: 'orange',
-                fillOpacity: 0.3,
-                weight: 2
-            }
-        }).addTo(map).bindPopup("Valgala");
-    });
+    // loadPolygonWithStyle()
 
     // Load and display river network layer
     fetchIfExists(url.concat('/output/converted/river_network.geojson'), data => {
@@ -151,21 +140,45 @@ function updateLayers() {
     fetchIfExists(url.concat('/output/converted/metadata.geojson'), data => {
         // Extracting features from metadata
         const features = data.features;
-    
+
         // Find the surface area from the first feature's properties
-        const surfaceArea = features[0].properties.surface_area_sqkm;
-    
+        //const surfaceArea = Math.round(features[0].properties.surface_area_sqkm * 100)/100;
+
         // Extract coordinates for user and snapped points
         let userCoords, snappedCoords;
-    
+        const kolvikudDiv = document.querySelector('.kolvikud');
+        if (kolvikudDiv){
+            while (kolvikudDiv.firstChild){
+                kolvikudDiv.removeChild(kolvikudDiv.firstChild);
+            }
+        }
+
         features.forEach(feature => {
-            if (feature.geometry.user_coords) {
-                userCoords = feature.geometry.user_coords;
-            } else if (feature.geometry.snapped_coords) {
-                snappedCoords = feature.geometry.snapped_coords;
+            if (feature.geometry) {
+                if (feature.geometry.user_coords) {
+                    userCoords = feature.geometry.user_coords;
+                } else if (feature.geometry.snapped_coords) {
+                    snappedCoords = feature.geometry.snapped_coords;
+                }
+            }
+
+             if (feature.properties && feature.properties.group_name && feature.properties.area_sqkm) {
+                // Create a new div for each feature's area
+                const areaDiv = document.createElement('div');
+                areaDiv.classList.add('kolvikud-item');  
+
+                // Add group name and area to the div
+                areaDiv.innerHTML =
+                    `
+                        ${feature.properties.group_name}: ${feature.properties.proportion.toFixed(2)} %
+                        
+                    `;
+
+                // Append the new div to the kolvikud container
+                kolvikudDiv.appendChild(areaDiv);
             }
         });
-    
+
         // Displaying markers for user and snapped coordinates (if available)
         if (userCoords) {
             const userCircle = L.circleMarker([userCoords.lat, userCoords.lon], {
@@ -173,51 +186,105 @@ function updateLayers() {
                 radius: 5
             }).addTo(map).bindPopup("Kasutaja sisestatud koordinaadid");
             circleMarkers.push(userCircle);
-    
+
             document.getElementById('user-coords').innerText = `Kasutaja sisestatud: (${userCoords.lat.toFixed(4)}, ${userCoords.lon.toFixed(4)})`;
         }
-    
+
         if (snappedCoords) {
             const snappedCircle = L.circleMarker([snappedCoords.lat, snappedCoords.lon], {
                 color: 'red',
                 radius: 5
             }).addTo(map).bindPopup("Vooluveekogu koordinaadid");
             circleMarkers.push(snappedCircle);
-    
+
             document.getElementById('snapped-coords').innerText = `Vooluveekogu: (${snappedCoords.lat.toFixed(4)}, ${snappedCoords.lon.toFixed(4)})`;
         }
-    
+
         document.getElementById('surface-area').innerHTML = `Valgala pindala: ${surfaceArea} km<sup>2</sup>`;
     });
 
     map.removeLayer(marker);
+
+    //kõlvikud
+    fetchIfExists(url.concat('/output/converted/kolvikud.geojson'), data => {
+        let layers = []
+        data.features.forEach(feature => {
+            layers.push(L.geoJSON(feature, {
+                style: {
+                    color: feature.properties.color
+                }
+            }))
+        })
+        window.kolvikud = L.layerGroup(layers).addTo(map);
+
+    });
 }
 
-let circleMarkers = [];
+
+
+function fetchIfExists(url, callback) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('File not found');
+                }
+                return response.json();
+            })
+            .then(data => {
+                callback(data);
+            })
+            .catch(error => {
+                // Log the error and keep checking
+                console.log(`${url} not found. Waiting for generation...`, error);
+            });
+}
+
+
+const cursorSizeInPixels = 2**19;
+function showPolygon(lat,lng){
+    const point = turf.point([lng, lat]);
+    if (circle) { map.removeLayer(circle); }
+
+    const zoom = map.getZoom();
+    const bufferRadiusInMeters = cursorSizeInPixels / 2**zoom;
+
+    const buffered_point = turf.buffer(point, bufferRadiusInMeters, {units: "meters"});
+
+    circle = L.geoJSON(buffered_point, {
+          style: {
+                color: 'blue',
+                weight: 1,
+                fillOpacity: 0,
+                dashArray: "10, 5",
+            }
+        }
+    ).addTo(map);
+    return buffered_point
+}
 
 function performCleanup() {
-    
+
     map.eachLayer(function(layer) {
         if (layer instanceof L.GeoJSON) {
             map.removeLayer(layer);
-        }   
+        }
     });
     circleMarkers.forEach(circleMarker => {
         map.removeLayer(circleMarker);
     });
-    circleMarkers = []; 
+    circleMarkers = [];
     selectedCoords = null;
 }
 
 function showStatus(message) {
     const statusDiv = document.getElementById('status');
-    statusDiv.style.display = 'block'; 
-    statusDiv.textContent = message; 
+    statusDiv.style.display = 'block';
+    statusDiv.textContent = message;
 }
 
 function hideStatus() {
     const statusDiv = document.getElementById('status');
-    statusDiv.style.display = 'none'; 
+    statusDiv.style.display = 'none';
 }
 
 tutorialBtn.addEventListener("click", () => {
@@ -228,11 +295,30 @@ closeBtn.addEventListener("click", () => {
     tutorial.classList.remove("open");
 });
 
+document.addEventListener("change", (event) => {
+  if (event.target.name === "polygonStyle") {
+    smoothCatchment = event.target.value === "smooth";
+    console.log(`Polygon style set to: ${smoothCatchment ? "Smooth" : "Rugged"}`);
+
+    // Add logic here to update your polygons based on the value of `isSmooth`
+
+    loadPolygonWithStyle();
+  }
+});
+
+function loadPolygonWithStyle() {
+      var watershed_Url = smoothCatchment ? '/output/converted/watershed_buffered.geojson' : '/output/converted/watershed.geojson';
+      fetchIfExists(url.concat(watershed_Url), data => {
+          L.geoJSON(data, {
+            style: {
+                color: 'red',
+                fillColor: 'orange',
+                fillOpacity: 0.3,
+                weight: 2
+            }
+        }).addTo(map).bindPopup("Valgala");
+    });
+}
+
 
 updateLayers();
-
-
-
-
-
-
