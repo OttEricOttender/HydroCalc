@@ -7,11 +7,12 @@ WORKDIR /hydro
 # Copying only requirements files first (to optimize caching)
 COPY requirements-conda.txt requirements-pip.txt ./
 
-RUN conda config --set solver classic
+RUN conda config --set solver libmamba
 
 # Installing dependencies
 RUN apt-get update && apt-get install -y postgresql-client   build-essential libpq-dev
 RUN conda install -y -c conda-forge python=3.11.10
+RUN conda config --set solver classic
 RUN conda install -y -c conda-forge --file requirements-conda.txt
 RUN pip install --no-cache-dir -r requirements-pip.txt
 

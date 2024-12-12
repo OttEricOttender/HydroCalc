@@ -11,7 +11,9 @@ services:
     env_file:
       - db.env
     ports:
-      - "5432:5432"
+    # To avoid conflicts (other db servers running on default port), the host port is currently mapped to 5433.
+    # feel free to change host port value.
+      - "5433:5432" 
     expose:
       - 5432
     volumes:

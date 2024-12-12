@@ -142,7 +142,7 @@ otsi.addEventListener('click', function(e) {
         const features = data.features;
 
         // Find the surface area from the first feature's properties
-        const surfaceArea = Math.round(features[0].properties.surface_area_sqkm * 100)/100;
+        //const surfaceArea = Math.round(features[0].properties.surface_area_sqkm * 100)/100;
 
         // Extract coordinates for user and snapped points
         let userCoords, snappedCoords;
@@ -165,7 +165,7 @@ otsi.addEventListener('click', function(e) {
              if (feature.properties && feature.properties.group_name && feature.properties.area_sqkm) {
                 // Create a new div for each feature's area
                 const areaDiv = document.createElement('div');
-                areaDiv.classList.add('kolvikud-item');  // You can style this class as needed
+                areaDiv.classList.add('kolvikud-item');  
 
                 // Add group name and area to the div
                 areaDiv.innerHTML =
@@ -206,7 +206,7 @@ otsi.addEventListener('click', function(e) {
     map.removeLayer(marker);
 
     //kõlvikud
-    fetchIfExists(url.concat('/output/epsg3301/kolvikud.geojson'), data => {
+    fetchIfExists(url.concat('/output/converted/kolvikud.geojson'), data => {
         let layers = []
         data.features.forEach(feature => {
             layers.push(L.geoJSON(feature, {
@@ -307,7 +307,7 @@ document.addEventListener("change", (event) => {
 });
 
 function loadPolygonWithStyle() {
-      var watershed_Url = smoothCatchment ? '/output/converted/watershed_buffered.geojson' : '/output/converted/watershed.geojson'
+      var watershed_Url = smoothCatchment ? '/output/converted/watershed_buffered.geojson' : '/output/converted/watershed.geojson';
       fetchIfExists(url.concat(watershed_Url), data => {
           L.geoJSON(data, {
             style: {

@@ -242,77 +242,118 @@ tabelid = ["e_301_muu_kolvik_a", "e_301_muu_kolvik_ka", "e_302_ou_a",
            "e_303_haritav_maa_a", "e_304_lage_a", "e_305_puittaimestik_a", "e_306_margala_a",
            " e_306_margala_ka", "e_307_turbavali_a"]
 
-color_map = {
-    "e_301_muu_kolvik_a": "#FF0000",  # Red
-    "e_301_muu_kolvik_ka": "#00FF00",  # Green
-    "e_302_ou_a": "#FFFF00",  # Yellow
-    "e_303_haritav_maa_a": "#FF00FF",  # Magenta
-    "e_304_lage_a": "#00FFFF",  # Cyan
-    "e_305_puittaimestik_a": "#FFA500",  # Orange
-    "e_306_margala_a": "#A52A2A",  # Brown
-    "e_306_margala_ka": "#008000",  # Dark Green
-    "e_307_turbavali_a": "#808080",  # Gray
-}
+def save_kolvikud(catchment_polygon, tabelid, output_path):
+    results = []
+    
+    color_map = {
+        "e_301_muu_kolvik_a": "#FF0000",  # Red
+        "e_301_muu_kolvik_ka": "#00FF00",  # Green
+        "e_302_ou_a": "#FFFF00",  # Yellow
+        "e_303_haritav_maa_a": "#FF00FF",  # Magenta
+        "e_304_lage_a": "#00FFFF",  # Cyan
+        "e_305_puittaimestik_a": "#FFA500",  # Orange
+        "e_306_margala_a": "#A52A2A",  # Brown
+        "e_306_margala_ka": "#008000",  # Dark Green
+        "e_307_turbavali_a": "#808080",  # Gray
+    }
 
-results = []
-for tabel in tabelid:
-    try:
-        config = load_config()
-        with psycopg2.connect(**config) as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    f"""SELECT ST_AsGeoJSON(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)), 9)
+    for tabel in tabelid:
+        try:
+            config = load_config()
+            with psycopg2.connect(**config) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"""
+                        SELECT ST_AsGeoJSON(
+                                  ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)), 9)
                         FROM public.{tabel} as area
                         WHERE ST_Intersects(area.geom, ST_GeomFromText(%s, 4326))
-                        AND NOT ST_IsEmpty(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)))
-                    """, (str(catchment), str(catchment), str(catchment))
-                )
-                result = cursor.fetchall()
-                if len(result) > 0:
-                    results.append((tabel, result))  # Store table name with result
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+                          AND NOT ST_IsEmpty(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)))
+                        """,
+                        (str(catchment_polygon), str(catchment_polygon), str(catchment_polygon))
+                    )
+                    result = cursor.fetchall()
+                    if len(result) > 0:
+                        results.append((tabel, result))
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
 
-kolvikud = []
-for tabel, result in results:
-    color = color_map.get(tabel.strip(), "#000000")
-    for geom_json in result:
-        if geom_json[0]:  # Ensure the geometry is not None
-            geom_dict = json.loads(geom_json[0])  # Parse the GeoJSON string into a dictionary
-
-            feature = {
-                "type": "Feature",
-                "geometry": geom_dict,
-                "properties": {
-                    "value": 1.0,
-                    "name": tabel,
-                    "color": color,
+    kolvikud = []
+    for tabel, result in results:
+        color = color_map.get(tabel.strip(), "#000000")
+        for geom_json in result:
+            if geom_json[0]:
+                geom_dict = json.loads(geom_json[0])
+                feature = {
+                    "type": "Feature",
+                    "geometry": geom_dict,
+                    "properties": {
+                        "value": 1.0,
+                        "name": tabel,
+                        "color": color,
+                    },
                 }
-            }
-            kolvikud.append(feature)
+                kolvikud.append(feature)
 
-# Convert the collected features into a GeoDataFrame
-gdf_kolvikud = gpd.GeoDataFrame.from_features(kolvikud, crs='EPSG:3301')
+    # Convert to GeoDataFrame and save
+    gdf_kolvikud = gpd.GeoDataFrame.from_features(kolvikud, crs='EPSG:4326')
+    gdf_kolvikud.to_file(output_path, driver='GeoJSON')
+    print(json.dumps(kolvikud, indent=2))
+    print(f"'Kõlvikud' saved to {output_path}")
 
-# Export the GeoDataFrame to a shapefile
-gdf_kolvikud.to_file('../output/epsg3301/kolvikud.geojson', driver='GeoJSON')
+
+def fetch_intersecting_areas(catchment_polygon, tabelid):
+    results = []
+    for tabel in tabelid:
+        try:
+            config = load_config()
+            with psycopg2.connect(**config) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                       f"""
+                        SELECT ST_Area(
+                                  ST_Transform(
+                                      ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)), 3301)) AS area,
+                               '{tabel}' AS name
+                        FROM public.{tabel} as area
+                        WHERE ST_Intersects(area.geom, ST_GeomFromText(%s, 4326))
+                          AND NOT ST_IsEmpty(ST_Intersection(area.geom, ST_GeomFromText(%s, 4326)))
+                        """,
+                        (str(catchment_polygon), str(catchment_polygon), str(catchment_polygon))
+                    )
+                    result = cursor.fetchall()
+                    results.extend(result)
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
+    # processing the results by grouping all the kõlvikud of the same type
+    areas_agg = {}
+    for area, name in results:
+        if area:
+            if name in areas_agg:
+                areas_agg[name] += area
+            else:
+                areas_agg[name] = area
+
+    areas = [{"name": name, "area_sqkm": total_area / 1e6} for name, total_area in areas_agg.items()]
+    return areas
 
 
-# Calculating the surface area
-total_area_sqkm = (gdf_catchment['geometry'].area.sum()) / 1e6
+# fetching and saving the kõlvikud to geojson
+save_kolvikud(catchment, tabelid, '../output/converted/kolvikud.geojson')
+
+# fetting the intersection areas of kõlvikud
+areas = fetch_intersecting_areas(catchment, tabelid)
+
+# calculating the surface area of the catchment - second option chosen for correct kõlvikud proportions
+# total_area_sqkm = (gdf_catchment['geometry'].area.sum()) / 1e6 # calculates on GeoDataFrame, more precise since it's from raw data
+total_area_sqkm = gdf_catchment_buffered.area.sum() / 1e6 # calculates on GeoSeries, less precise because .buffer(5).simplify(10) were applied to it
+
+
+# converting to tuples for geojson
 user_coords = (x,y)
 snapped_coords = (x_snap, y_snap)
 
-# Komineerime sama nimega kolvikud
-gdf_kolvikud_grouped = gdf_kolvikud.dissolve(by="name", as_index=False)
-gdf_kolvikud_grouped['area_sqkm'] = gdf_kolvikud_grouped['geometry'].area.sum() / 1e6  # m² to km²
-# Liidame sama nimega kolvikute pindalad
-
-# Arvutame suhtelise pindala
-gdf_kolvikud_grouped['proportion'] = gdf_kolvikud_grouped['area_sqkm'] / total_area_sqkm * 100
-
-# Output results
-print(gdf_kolvikud_grouped[['name', 'area_sqkm', 'proportion']])
 
 # Prepare metadata dictionary
 metadata = {
@@ -334,18 +375,19 @@ metadata = {
     ]
 }
 
-# Add group details to metadata
-for _, row in gdf_kolvikud_grouped.iterrows():
+# kõlvik details (area and proportion) to metadata
+for entry in areas:  # areas is from fetch_intersecting_areas()
     feature = {
         "type": "Feature",
         "properties": {
-            "group_name": row.get("name"),
-            "area_sqkm": row['area_sqkm'],
-            "proportion": row['proportion']
+            "group_name": entry['name'],
+            "area_sqkm": entry['area_sqkm'],
+            "proportion": (entry['area_sqkm'] / total_area_sqkm) * 100  
         },
-        "geometry": None
+        "geometry": None  # no geometry for metadata details
     }
     metadata['features'].append(feature)
+
 
 
 print(json.dumps(metadata, indent=2))
@@ -355,3 +397,4 @@ with open('../output/epsg3301/metadata.geojson', 'w') as f:
     json.dump(metadata, f)
 
 print("Metadata saved as GeoJSON")
+
