@@ -3,11 +3,10 @@ const longitude= document.getElementById('longitude');
 const otsi= document.getElementById('otsi');
 
 const tutorialBtn= document.getElementById('tutorial_button');
-const closeBtn= document.getElementById('close_tutorial');
 const tutorial= document.getElementById('tutorial');
 
+let waterShedLayer = null; // Variable to hold the current layer reference
 let smoothCatchment = false;
-
 
 const url='http://127.0.0.1:5001';
 
@@ -99,6 +98,9 @@ map.on('click', function(e) {
     var lng = e.latlng.lng;
     selectedCoords = {lat, lng};
 
+    latitude.value = lat.toFixed(4);
+    longitude.value = lng.toFixed(4);
+
     console.log(`Selected Latitude: ${lat}, Longitude: ${lng}`);
 
     if (marker) { map.removeLayer(marker); }
@@ -122,7 +124,7 @@ otsi.addEventListener('click', function(e) {
         .bindPopup(`Koordinaadid: ${lat}, ${lng}`)
         .openPopup();
 });
- function updateLayers() {
+function updateLayers() {
 
     // Load and display watershed layer
     // loadPolygonWithStyle()
@@ -288,11 +290,7 @@ function hideStatus() {
 }
 
 tutorialBtn.addEventListener("click", () => {
-    tutorial.classList.add("open");
-});
-
-closeBtn.addEventListener("click", () => {
-    tutorial.classList.remove("open");
+    tutorial.classList.toggle("open");
 });
 
 document.addEventListener("change", (event) => {
@@ -307,9 +305,18 @@ document.addEventListener("change", (event) => {
 });
 
 function loadPolygonWithStyle() {
-      var watershed_Url = smoothCatchment ? '/output/converted/watershed_buffered.geojson' : '/output/converted/watershed.geojson';
-      fetchIfExists(url.concat(watershed_Url), data => {
-          L.geoJSON(data, {
+    const watershed_Url = smoothCatchment 
+    ? '/output/converted/watershed_buffered.geojson' 
+    : '/output/converted/watershed.geojson';
+
+    // Remove the previous layer if it exists
+    if (waterShedLayer) {
+        map.removeLayer(waterShedLayer);
+    }
+
+    fetchIfExists(url.concat(watershed_Url), (data) => {
+        // Add the new layer to the map and store it in `waterShedLayer`
+        waterShedLayer = L.geoJSON(data, {
             style: {
                 color: 'red',
                 fillColor: 'orange',
