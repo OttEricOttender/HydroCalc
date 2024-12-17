@@ -18,8 +18,8 @@ function loadPolygonWithStyle() {
                 window.watershedLayer = L.geoJSON(data, {
                     style: {
                         color: 'red',
-                        fillColor: 'orange',
-                        fillOpacity: 0.1,
+                        fillColor: 'red',
+                        fillOpacity: 0.025,
                         weight: 2
                     }
                 }).addTo(map).bindPopup("Valgala");

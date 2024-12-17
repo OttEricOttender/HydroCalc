@@ -246,18 +246,20 @@ catchment = gdf_catchment_4326[0]
 
 tabelid = ["e_301_muu_kolvik_a", "e_301_muu_kolvik_ka", "e_302_ou_a",
            "e_303_haritav_maa_a", "e_304_lage_a", "e_305_puittaimestik_a", "e_306_margala_a",
-           " e_306_margala_ka", "e_307_turbavali_a"]
+           "e_306_margala_ka", "e_307_turbavali_a"]
+
 color_map = {
-    "e_301_muu_kolvik_a": "#FF0000",  # Red
-    "e_301_muu_kolvik_ka": "#00FF00",  # Green
-    "e_302_ou_a": "#FFFF00",  # Yellow
-    "e_303_haritav_maa_a": "#FF00FF",  # Magenta
-    "e_304_lage_a": "#00FFFF",  # Cyan
-    "e_305_puittaimestik_a": "#FFA500",  # Orange
-    "e_306_margala_a": "#A52A2A",  # Brown
-    "e_306_margala_ka": "#008000",  # Dark Green
-    "e_307_turbavali_a": "#808080",  # Gray
+    "e_301_muu_kolvik_a": "#32CD32",  # Lime Green
+    "e_301_muu_kolvik_ka": "#6A6A6A",  # Dark Gray
+    "e_302_ou_a": "#8B4513",  # Saddle Brown
+    "e_303_haritav_maa_a": "#FFD700",  # Gold
+    "e_304_lage_a": "#000080",  # Navy
+    "e_305_puittaimestik_a": "#228B22",  # Forest Green
+    "e_306_margala_a": "#828C51",  # Olive Green
+    "e_306_margala_ka": "#006D75",  # Teal
+    "e_307_turbavali_a": "#4D004D",  # Dark Purple
 }
+
 
 def save_kolvikud(catchment_polygon, color_map, tabelid, output_path):
     results = []
@@ -354,6 +356,13 @@ areas = fetch_intersecting_areas(catchment, tabelid)
 # total_area_sqkm = (gdf_catchment['geometry'].area.sum()) / 1e6 # calculates on GeoDataFrame, more precise since it's from raw data
 total_area_sqkm = gdf_catchment_buffered.area.sum() / 1e6 # calculates on GeoSeries, less precise because .buffer(5).simplify(10) were applied to it
 
+kolvikud_total_area = sum(entry['area_sqkm'] for entry in areas)
+
+other_area = total_area_sqkm - kolvikud_total_area
+
+# for avoiding floating-point discrepancies
+threshold = 0.001
+
 
 # converting to tuples for geojson
 user_coords = (x,y)
@@ -391,6 +400,21 @@ for entry in areas:  # areas is from fetch_intersecting_areas()
             "color": color_map[entry['name']] 
         },
         "geometry": None  # no geometry for metadata details
+    }
+    metadata['features'].append(feature)
+
+
+# Adding the other area to metadata
+if other_area > threshold:
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Muu maa", 
+            "area_sqkm": round(other_area, 6),
+            "proportion": (other_area / total_area_sqkm) * 100,
+            "color": "#000000"  # black color for "Muu maa" - not displayed on the map
+        },
+        "geometry": None
     }
     metadata['features'].append(feature)
 
