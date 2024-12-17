@@ -88,3 +88,9 @@ try:
     convert_watershed(epsg3301_files[3], output_watershed_buffered)
 except Exception as e:
     print("here", e)
+
+
+for file in epsg3301_files:
+    if os.path.exists(file):
+        os.remove(file)
+        print(f"EPSG:3301 temporary file {file} deleted.")

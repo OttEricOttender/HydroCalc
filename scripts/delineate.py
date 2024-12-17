@@ -240,27 +240,28 @@ gdf_river_network.to_file('../output/epsg3301/river_network.geojson', driver='Ge
 print("River network saved as GeoJSON")
 
 
+
+
 catchment = gdf_catchment_4326[0]
 
 tabelid = ["e_301_muu_kolvik_a", "e_301_muu_kolvik_ka", "e_302_ou_a",
            "e_303_haritav_maa_a", "e_304_lage_a", "e_305_puittaimestik_a", "e_306_margala_a",
            " e_306_margala_ka", "e_307_turbavali_a"]
+color_map = {
+    "e_301_muu_kolvik_a": "#FF0000",  # Red
+    "e_301_muu_kolvik_ka": "#00FF00",  # Green
+    "e_302_ou_a": "#FFFF00",  # Yellow
+    "e_303_haritav_maa_a": "#FF00FF",  # Magenta
+    "e_304_lage_a": "#00FFFF",  # Cyan
+    "e_305_puittaimestik_a": "#FFA500",  # Orange
+    "e_306_margala_a": "#A52A2A",  # Brown
+    "e_306_margala_ka": "#008000",  # Dark Green
+    "e_307_turbavali_a": "#808080",  # Gray
+}
 
-def save_kolvikud(catchment_polygon, tabelid, output_path):
+def save_kolvikud(catchment_polygon, color_map, tabelid, output_path):
     results = []
     
-    color_map = {
-        "e_301_muu_kolvik_a": "#FF0000",  # Red
-        "e_301_muu_kolvik_ka": "#00FF00",  # Green
-        "e_302_ou_a": "#FFFF00",  # Yellow
-        "e_303_haritav_maa_a": "#FF00FF",  # Magenta
-        "e_304_lage_a": "#00FFFF",  # Cyan
-        "e_305_puittaimestik_a": "#FFA500",  # Orange
-        "e_306_margala_a": "#A52A2A",  # Brown
-        "e_306_margala_ka": "#008000",  # Dark Green
-        "e_307_turbavali_a": "#808080",  # Gray
-    }
-
     for tabel in tabelid:
         try:
             config = load_config()
@@ -302,7 +303,7 @@ def save_kolvikud(catchment_polygon, tabelid, output_path):
     # Convert to GeoDataFrame and save
     gdf_kolvikud = gpd.GeoDataFrame.from_features(kolvikud, crs='EPSG:4326')
     gdf_kolvikud.to_file(output_path, driver='GeoJSON')
-    print(json.dumps(kolvikud, indent=2))
+    #print(json.dumps(kolvikud, indent=2))
     print(f"'Kõlvikud' saved to {output_path}")
 
 
@@ -344,7 +345,7 @@ def fetch_intersecting_areas(catchment_polygon, tabelid):
 
 
 # fetching and saving the kõlvikud to geojson
-save_kolvikud(catchment, tabelid, '../output/converted/kolvikud.geojson')
+save_kolvikud(catchment, color_map, tabelid, '../output/converted/kolvikud.geojson')
 
 # fetting the intersection areas of kõlvikud
 areas = fetch_intersecting_areas(catchment, tabelid)
@@ -386,7 +387,8 @@ for entry in areas:  # areas is from fetch_intersecting_areas()
         "properties": {
             "group_name": entry['name'],
             "area_sqkm": entry['area_sqkm'],
-            "proportion": (entry['area_sqkm'] / total_area_sqkm) * 100  
+            "proportion": (entry['area_sqkm'] / total_area_sqkm) * 100,
+            "color": color_map[entry['name']] 
         },
         "geometry": None  # no geometry for metadata details
     }
@@ -402,3 +404,6 @@ with open('../output/epsg3301/metadata.geojson', 'w') as f:
 
 print("Metadata saved as GeoJSON")
 
+if os.path.exists(temp_dem_path):
+    os.remove(temp_dem_path)
+    print(f"Temporary file {temp_dem_path} deleted.")
