@@ -40,6 +40,8 @@ function loadPolygonWithStyle() {
    document.addEventListener("change", (event) => {
     if (event.target.name === "polygonStyle") {
         console.log(`Switching to ${event.target.value} watershed style.`);
+        window.currentPolygonStyle = event.target.value;
+        // reloading
         loadPolygonWithStyle();
     }
 });

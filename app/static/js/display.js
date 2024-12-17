@@ -62,14 +62,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     // adding watershed style and kõlvikud toggle
                     const toggleDiv = document.createElement('div');
                     const isLandUsageEnabled = window.kolvikudLayer ? "checked" : "";
-
+                    const smoothChecked = window.currentPolygonStyle === "smooth" ? "checked" : "";
+                    const ruggedChecked = window.currentPolygonStyle === "rugged" ? "checked" : "";
                     toggleDiv.innerHTML = `
                         <label>
-                            <input type="radio" name="polygonStyle" value="smooth" id="smooth" checked>
+                            <input type="radio" name="polygonStyle" value="smooth" id="smooth" ${smoothChecked}>
                             Sujuv
                         </label>
                         <label>
-                            <input type="radio" name="polygonStyle" value="rugged" id="rugged">
+                            <input type="radio" name="polygonStyle" value="rugged" id="rugged" ${ruggedChecked}>
                             Täpne
                         </label>
                         <label>

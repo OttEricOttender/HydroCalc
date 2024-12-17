@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.kolvikudLayer = null; // active land usage layer
 
     // Flags
-    window.smoothCatchment = false; // "Sujuv" vs "Täpne" toggle state
+    window.currentPolygonStyle = "smooth"; // "Sujuv" vs "Täpne" toggle state
 
     console.log("Global variables initialized.");
 
