@@ -10,7 +10,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.2/proj4.js"></script>
         <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
         <script src="../static/js/startup.js"></script>
+        <script src="../static/js/utils.js"></script>
         <script src="../static/js/userInput.js"></script>
+        <script src="../static/js/layers.js"></script>
         <script src="../static/js/display.js"></script>
         <script src="../static/js/fetch.js"></script>
 
@@ -24,8 +26,9 @@
             <input type="text" id="longitude" name="longitude" placeholder="Sisesta pikkuskraad"><br>
             <button id="otsi" onclick="">Otsi</button>
             <button id="button" onclick="findWatershed()">Piiritle</button>
-            <div id="metadata-panel"> <!-- info dynamically rendered here --> 
+            <div id="metadata-panel"> 
                 <div id="status"></div>
+                <!-- info dynamically rendered here --> 
             </div>
             
         </div>

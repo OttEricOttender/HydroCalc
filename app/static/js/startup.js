@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.selectedCoords = null; // stores validated coordinates (easting, northing)
     window.marker = null;         // marker for selected coordinates
     window.circleMarkers = [];    // array for user/snapped coordinate markers
-    window.waterShedLayer = null; // active watershed layer
+    window.watershedLayer = null; // active watershed layer
     window.kolvikudLayer = null; // active land usage layer
 
     // Flags

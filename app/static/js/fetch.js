@@ -1,38 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    function showMetadataPanel() {
-        const metadataPanel = document.getElementById('metadata-panel');
-        if (metadataPanel) {
-            metadataPanel.style.display = 'block';
-            console.log("Metadata panel visible.");
-        } else {
-            console.warn("Metadata panel not found in the DOM.");
-        }
-    }
-
-    
-    function showStatus(message) {
-        const statusDiv = document.getElementById('status');
-        if (statusDiv) {
-            statusDiv.style.display = 'block';
-            statusDiv.textContent = message;
-            console.log(`Status: ${message}`);
-        } else {
-            console.warn("Status element not found in the DOM.");
-        }
-    }
-    
-    function hideStatus() {
-        const statusDiv = document.getElementById('status');
-        if (statusDiv) {
-            statusDiv.style.display = 'none';
-            console.log("Status message hidden.");
-        } else {
-            console.warn("Status element not found in the DOM.");
-        }
-    }
-    
-
     function findWatershed(retries = 3, delay = 500) {
         if (!window.selectedCoords) {
             alert("Palun vali punkt kaardil.");         
@@ -44,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const {easting, northing} = validationResult;
     
-        performCleanup(); // clean old layers and markers - defined in layers.js
+        performCleanup(); // clean old layers and markers - defined in utils.js
         showMetadataPanel();
         showStatus("Arvutab... Palun oodake.");
     
