@@ -39,7 +39,7 @@ if not os.path.exists(dem_path):
     print("Raster file downloaded.")
 
 
-# Parsing coordinates from command-line args
+# Parsing coordinates from command-line args - this can be adjusted later if the 30m buffer rule is added in the frontend
 if len(sys.argv) >= 3:
     try:
         x, y = float(sys.argv[1]), float(sys.argv[2])
@@ -122,7 +122,7 @@ print(prepare.url)
 # x, y = 600000.017, 6450000  # hardcoded for testing script-only
 
 # Define a window around the coordinates 
-buffer = 7500  # meters
+buffer = 5000  # meters
 
 
 try:
@@ -169,9 +169,11 @@ grid = Grid.from_raster(temp_dem_path, data_name='dem')
 dem_raster = grid.read_raster(temp_dem_path)
 
 # filling pits, depressions, and resolving flats
+
 pit_filled_dem = grid.fill_pits(dem_raster)
 flooded_dem = grid.fill_depressions(pit_filled_dem)
 inflated_dem = grid.resolve_flats(flooded_dem)
+
 
 print("Filling pits, depressions, and resolving flats complete")
 
@@ -186,10 +188,16 @@ print("Flow direction complete")
 
 # calculating the flow accumulation
 acc = grid.accumulation(flow_direction, dirmap=dirmap)
+#print("Unique cells: " + np.unique(acc).tolist())
+
+# Unique values among accumulation cells
+unique_acc = np.unique(acc).tolist()
+# Different options for determining the snap point
+median_acc = np.median(unique_acc)
+max_acc = max(unique_acc) - 1
 
 # Snap pour point to high accumulation cell
-# Value 1000 is for snapping from a meaningful point, we can adjust it in the future if needed
-x_snap, y_snap = grid.snap_to_mask(acc > 700, (x, y)) # x,y are user entered
+x_snap, y_snap = grid.snap_to_mask(acc > median_acc, (x, y)) # x,y are user entered
 
 print(f"Snapped coordinates: {x_snap}, {y_snap}")
 

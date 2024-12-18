@@ -23,12 +23,18 @@ def receive_coordinates():
     lng = data.get('longitude')
     easting = data.get('easting')
     northing = data.get('northing')
+    #snapped_easting = data.get('snapped_easting')  
+    #snapped_northing = data.get('snapped_northing')
 
     # Log received data for testing
     print(f"Received coordinates: Latitude: {lat}, Longitude: {lng}")
     print(f"EPSG:3301 Coordinates: Easting: {easting}, Northing: {northing}")
 
-    # Call watershed delineation script
+    # -- Calling the watershed delineation script --
+    
+    # This is with frontend 30m buffer validaton included - not implemented in the script yet
+    #subprocess.call(['python', '../scripts/delineate.py', str(easting), str(northing), str(snapped_easting), str(snapped_northing)]) 
+    # Regular behavior - script works
     subprocess.call(['python', '../scripts/delineate.py', str(easting), str(northing)])
 
     # Convert GeoJSON to WGS84

@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const validationResult = validateCoordinates(lat, lng); 
         if (!validationResult) return;
         
+        // const {easting, northing, snappedCoords} = validationResult; // for the 30m rule version
         const {easting, northing} = validationResult;
+
     
         performCleanup(); // clean old layers and markers - defined in utils.js
         showMetadataPanel();
@@ -20,7 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 easting: easting,
-                northing: northing,
+                northing: northing
+            //    snapped_easting: snappedCoords.easting,
+            //    snapped_northing: snappedCoords.northing
             })
         })
         .then(response => response.json())
