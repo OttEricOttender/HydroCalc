@@ -6,6 +6,6 @@
 * Updated Scope and Release Notes are below.
 * Notes from the third customer meeting can be found [here.](https://docs.google.com/document/d/1GLRxO3IrmfZlSKTHxG1U5wnGT4KB6AI-1C-jxzic8kA/edit?tab=t.0)
 
-## Scope is findable [here](https://github.com/OttEricOttender/HydroCalc/blob/main/documentation/Scope.md)
+## Scope is findable [here](https://github.com/OttEricOttender/HydroCalc/blob/master/Documentation/Scope.md)
 
-## Product Vision is findable [here.](HydroCalc/documentation/Project_Vision.md)
+## Product Vision is findable [here.](https://github.com/OttEricOttender/HydroCalc/blob/master/Documentation/Project_Vision.md)
