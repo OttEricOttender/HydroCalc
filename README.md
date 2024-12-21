@@ -1,6 +1,6 @@
 # Hydrological Parameters Calculator
 
-## How to navigate our repo for Iteration 3:
+## How to navigate our repo for Iteration 4:
 * The application and it's functionality can be accessed through docker. There instructions on how to set it up are [here.](https://github.com/OttEricOttender/HydroCalc/blob/master/DOCKER_instructions.md). 
 * Detailed use cases with the linking UI prototypes can be found [here.](https://github.com/OttEricOttender/HydroCalc/tree/master/Documentation/Use%20Cases).
 * Updated Scope and Release Notes are below.
