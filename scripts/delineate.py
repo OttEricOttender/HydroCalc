@@ -6,6 +6,7 @@ import urllib.request
 import json
 import urllib
 from sqlite3 import DatabaseError
+import math
 
 import geojson
 import numpy as np
@@ -353,11 +354,25 @@ def fetch_intersecting_areas(catchment_polygon, tabelid):
     areas = [{"name": name, "area_sqkm": total_area / 1e6} for name, total_area in areas_agg.items()]
     return areas
 
+def get_raster_aravoolud(raster_path, coords):
+    try:
+        with rasterio.open(raster_path) as src:
+            # transforming coords to the raster's coordinate system
+            row, col = src.index(coords[0], coords[1])
+            # reading the value at the specified row and column
+            value = src.read(1)[row, col]
+            if value == src.nodata:
+                raise ValueError(f"No data value encountered at {coords}")
+            return value
+    except Exception as e:
+        print(f"Error retrieving raster value from {raster_path}: {e}")
+    return None
+
 
 # fetching and saving the kõlvikud to geojson
 save_kolvikud(catchment, color_map, tabelid, '../output/converted/kolvikud.geojson')
 
-# fetting the intersection areas of kõlvikud
+# fetching the intersection areas of kõlvikud
 areas = fetch_intersecting_areas(catchment, tabelid)
 
 # calculating the surface area of the catchment - second option chosen for correct kõlvikud proportions
@@ -426,6 +441,166 @@ if other_area > threshold:
     }
     metadata['features'].append(feature)
 
+# --- Äravoolu arvutus ---
+
+# getting the drainage metrics
+klim_aravool = get_raster_aravoolud('../data/aravoolud/infil04.tif', (x_snap, y_snap)) # Aasta klimaatiline äravoolunorm.
+kesk_min_aravool = get_raster_aravoolud('../data/aravoolud/TopoToR_JOON41.tif', (x_snap, y_snap)) # Aasta keskmine minimaalne äravoolumoodul
+
+if klim_aravool is None or kesk_min_aravool is None:
+    print("Error: Could not retrieve values for drainage calculations.")
+    sys.exit(1)
+
+print(f"Klimaatiline äravoolunorm: {klim_aravool}")
+print(f"Keskmine minimaalne äravool: {kesk_min_aravool}")
+
+
+kolvikud_areas = {entry["name"]: entry["area_sqkm"] for entry in areas}
+
+margala_a = kolvikud_areas.get('e_306_margala_a', 0)
+#margala_ka = kolvikud_areas.get('e_306_margala_ka', 0)
+puittaimestik_a = kolvikud_areas.get('e_305_puittaimestik_a', 0)
+lage_a = kolvikud_areas.get('e_304_lage_a', 0)
+ou_a = kolvikud_areas.get('e_302_ou_a', 0)
+haritav_maa_a = kolvikud_areas.get('e_303_haritav_maa_a', 0)
+
+# Proportions in percentages
+Ams = ((margala_a * 0.8) / total_area_sqkm) * 100 # veekogud arvestusest puudu
+Ar = ((margala_a * 0.2) / total_area_sqkm) * 100
+Akm = ((haritav_maa_a) / total_area_sqkm) * 100  # maaparandussüsteem puudu
+B = ((puittaimestik_a) / total_area_sqkm) * 100
+
+# maaparandussüsteem puudu
+C = ((lage_a + ou_a + haritav_maa_a + kolvikud_areas.get('e_301_muu_kolvik_a', 0)) / total_area_sqkm) * 100
+
+pindala = total_area_sqkm  # Valgala pindala. 
+
+p = 10  # Ületõusutõenäosus. 
+
+# Need arvutab programm ise
+q95 = kesk_min_aravool # ei pea 0.95-ga korrutama
+a = Ams + Akm
+k95 = None  # Päevakeskmine äravoolu moodulkoefitsent.
+qparand = None  # Parand, mis arvestab kohalike tingimuste mõju äravoolule.
+aravoolunorm = None  # Äravoolunorm.
+rs = None  # Parameeter, mis arvestab valgala metsasuse ja soostumise mõju sügisesele tippäravoolule.
+rk = None  # Parameeter, mis arvestab valgala metsasuse ja soostumise mõju kevadisele tippäravoolule.
+q_sugis = None  # Sügisene maksimaalne äravoolumoodul.
+q_kevad = None  # Kevadine maksimaalne äravoolumoodul.
+
+def qparandfunc(a, q95):
+    return 0.02 * a + 0.3 * q95 - 1
+
+def aravoolunormfunc(klim_aravool, qparand):
+    return klim_aravool + qparand
+
+def calc_rs(Ams, Ar, Akm, B, C):
+    return 0.005 * (Ams + Ar - 0.2 * Akm - 0.1 * B - 0.6 * C) - 0.02
+
+def calc_rk(Ams, Ar, Akm, B, C):
+    return 0.004 * (Ams + 0.4 * (Ar + Akm) + B + 0.2 * C) - 0.2
+
+def calc_k95(q95, aravoolunorm):
+    return q95 / aravoolunorm
+
+def calc_qs(aravoolunorm, p, pindala, k95, rs):
+    return aravoolunorm * (
+        (26 - 11.5 * math.log10(p + 1)) / (pindala + 1) ** 0.11
+    ) ** (1 - k95 - rs)
+
+def calc_qk(aravoolunorm, p, pindala, k95, rk):
+    return aravoolunorm * (
+        (112 - 52 * math.log10(p + 1)) / (pindala + 1) ** 0.14
+    ) ** (1 - k95 - rk)
+
+if pindala < 100:
+    pindala = 100
+    p = 10
+
+qparand = qparandfunc(a, q95)
+aravoolunorm = aravoolunormfunc(klim_aravool, qparand)
+rs = calc_rs(Ams, Ar, Akm, B, C)
+rk = calc_rk(Ams, Ar, Akm, B, C)
+k95 = calc_k95(q95, aravoolunorm)
+q_sugis = calc_qs(aravoolunorm, p, pindala, k95, rs)
+q_kevad = calc_qk(aravoolunorm, p, pindala, k95, rk)
+
+print(f"Kevadine tippäravool: {q_kevad} kuupmeetrit sekundis.")
+print(f"Sügisene tippäravool: {q_sugis} kuupmeetrit sekundis.")
+
+
+# --- Äravoolu arvutus valmis ---
+
+# Add calculated metrics to metadata
+aravoolu_features = [
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Madalsood ja soometsad (Ams)",
+            "value_percentage": Ams,
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Rabad (Ar)",
+            "value_percentage": Ar,
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Intensiivselt kuivendatud madalsood (Akm)",
+            "value_percentage": Akm,
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Metsaga kaetud mineraalmaa (B)",
+            "value_percentage": B,
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Lage mineraalmaa (C)",
+            "value_percentage": C,
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Maaparandus",
+            "value_percentage": "-",
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Sügisene maksimaalne äravoolumoodul (q_sugis)",
+            "value_cubic_m_per_sec": q_sugis,
+        },
+        "geometry": None
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "group_name": "Kevadine maksimaalne äravoolumoodul (q_kevad)",
+            "value_cubic_m_per_sec": q_kevad,
+        },
+        "geometry": None
+    }
+]
+
+# adding äravoolu metrics to metadata geoJSON
+metadata["features"].extend(aravoolu_features)
 
 
 print(json.dumps(metadata, indent=2))

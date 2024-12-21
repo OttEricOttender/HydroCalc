@@ -38,6 +38,7 @@ services:
     volumes:
       - ./scripts:/hydro/scripts
       - ./app:/hydro/app
+      - ./data:/hydro/data
     ports:
       - 5001:5000
     expose:
