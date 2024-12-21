@@ -7,8 +7,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 const mapUrl = 'http://127.0.0.1:5001/'; //'http://127.0.0.1:5500/app/templates/';
 const cordinatesKeyWord = "Koordinaadid:"; //"Coordinates:";
 const delineateId = "button"; ////"Delineate";
-const latitude = 58.379162299686136;
-const longitude = 26.72530712346984;
+const latitude = 58.3791;
+const longitude = 26.7253;
 
 describe('Map Features', () => {
   describe('Zoom Functionality', () => {
@@ -93,7 +93,7 @@ describe('Map Features', () => {
       cy.get('input#longitude').type(longitude.toString());
 
       // Click the submit button
-      cy.get('input#otsi').click();
+      cy.get('button#otsi').click();
 
       // Check if the popup contains the expected coordinates
       cy.get('.leaflet-popup-content').should('contain', `${cordinatesKeyWord} ${latitude}, ${longitude}`);
@@ -102,12 +102,7 @@ describe('Map Features', () => {
 
   describe('Delineate Functionality', () => {
     beforeEach(() => {
-      cy.visit(mapUrl, { cache: false }); 
-      cy.wait(1000);
-    });
-
-    before(() => {
-      cy.visit(mapUrl, { cache: false }); 
+      cy.visit(mapUrl, { cache: this }); 
       cy.wait(1000);
 
       cy.window().then((win) => {
