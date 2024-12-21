@@ -102,7 +102,7 @@ describe('Map Features', () => {
 
   describe('Delineate Functionality', () => {
     beforeEach(() => {
-      cy.visit(mapUrl, { cache: this }); 
+      cy.visit(mapUrl, { cache: false }); 
       cy.wait(1000);
 
       cy.window().then((win) => {
