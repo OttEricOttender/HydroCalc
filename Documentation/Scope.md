@@ -111,7 +111,7 @@
 
 
   
-### Iteration 4 (4 people, 4 weeks, X hours). Deadline: 13/12/2024
+### Iteration 4 (4 people, 4 weeks, 20 hours). Deadline: 13/12/2024
 **Goal**: The goal of this iteration is to (i) Fully develop **all** use cases and non-functional requirements, (ii) Create automated tests for all functionalities and (iii) Upgrade CI environment.
 
 **Use Cases to be Implemented:**
@@ -132,15 +132,15 @@
   * As a system administrator, I want the system to handle up to 500 concurrent users without degrading performance
 
 **Tasks:**
-  * Develop the information tab to display relevant information about the spot chosen on the map. [Issue #36](https://github.com/OttEricOttender/HydroCalc/issues/66) (Estimated: 3 hours, Actual Y hours)
-  * Write the code for the necessary calculations done by the application. [Issue #37](https://github.com/OttEricOttender/HydroCalc/issues/67) (Estimated: 4 hours, Actual Y hours)
-  * Figure out the selection of overlays that could be displayed on the map. [Issue #38](https://github.com/OttEricOttender/HydroCalc/issues/68) (Estimated: 1 hours, Actual Y hours)
-  * Develop the possibility of displaying different overlays on map. [Issue #39](https://github.com/OttEricOttender/HydroCalc/issues/69) (Estimated: 3 hours, Actual Y hours)
-  * Make it possible for the user to export the information from the site as a PDF file. [Issue #40](https://github.com/OttEricOttender/HydroCalc/issues/70) (Estimated: 3 hours, Actual Y hours)
-  * Add the functionality of saving previous searches. [Issue #41](https://github.com/OttEricOttender/HydroCalc/issues/71) (Estimated: 4 hours, Actual Y hours)
-  * Develop a database for saving the searches. [Issue #42](https://github.com/OttEricOttender/HydroCalc/issues/72) (Estimated: 2 hours, Actual Y hours)
-  * Develop the Tutorial environment. [Issue #43](https://github.com/OttEricOttender/HydroCalc/issues/73) (Estimated: 4 hours, Actual Y hours)
-  * Response to the peer-review. [Issue #44](https://github.com/OttEricOttender/HydroCalc/issues/74) (Estimated: 1 hour, Actual Y hours)
+  * Develop the information tab to display relevant information about the spot chosen on the map. [Issue #36](https://github.com/OttEricOttender/HydroCalc/issues/66) (Estimated: 3 hours, Actual 3 hours)
+  * Write the code for the necessary calculations done by the application. [Issue #37](https://github.com/OttEricOttender/HydroCalc/issues/67) (Estimated: 4 hours, Actual 4 hours)
+  * Figure out the selection of overlays that could be displayed on the map. [Issue #38](https://github.com/OttEricOttender/HydroCalc/issues/68) (Estimated: 1 hours, Actual 1 hours)
+  * Develop the possibility of displaying different overlays on map. [Issue #39](https://github.com/OttEricOttender/HydroCalc/issues/69) (Estimated: 3 hours, Actual 4 hours)
+  * Make it possible for the user to export the information from the site as a PDF file. [Issue #40](https://github.com/OttEricOttender/HydroCalc/issues/70) (Estimated: 3 hours, Actual 4 hours)
+  * Add the functionality of saving previous searches. [Issue #41](https://github.com/OttEricOttender/HydroCalc/issues/71) (Estimated: 4 hours, Actual N/A hours)
+  * Develop a database for saving the searches. [Issue #42](https://github.com/OttEricOttender/HydroCalc/issues/72) (Estimated: 2 hours, Actual N/A hours)
+  * Develop the Tutorial environment. [Issue #43](https://github.com/OttEricOttender/HydroCalc/issues/73) (Estimated: 4 hours, Actual 3 hours)
+  * Response to the peer-review. [Issue #44](https://github.com/OttEricOttender/HydroCalc/issues/74) (Estimated: 1 hour, Actual 1 hours)
 
 **Testing**
   * Conduct tests for **Information Tab** [Issue #45](https://github.com/OttEricOttender/HydroCalc/issues/75) (Estimated: 3 hours, Actual: Y hours)
