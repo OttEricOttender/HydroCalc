@@ -150,7 +150,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
                         metadataPanel.appendChild(kolvikudDiv);
                     }
-    
+                    // Downloading the pdf button
+                    const pdfButton = document.createElement('button');
+                    pdfButton.textContent = "Lae PDF alla"
+                    pdfButton.className = "pdf-download-btn";
+                    pdfButton.addEventListener("click", async() => {
+                        try {
+                            const features = await fetchFeaturesPDF();
+                            generatePDF(features);
+                        } catch (error) {
+                            console.error("Error generating PDF:", error);
+                        }
+                    });
+                    metadataPanel.appendChild(pdfButton);
                     resolve(); // metadata panel is fully rendered
                 } catch (error) {
                     reject(error); // handling any rendering errors

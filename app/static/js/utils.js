@@ -100,6 +100,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
         }
 
+        async function fetchFeaturesPDF() {
+            return new Promise((resolve, reject) => {
+                fetchIfExists(url.concat('/output/converted/metadata.geojson'), (data) => {
+                    try {
+                        resolve(data.features)
+                        console.log(data.features)
+                    } catch (error) {
+                        reject("Error processing metadata features: " + error);
+                    }
+                });
+            });
+        }
+        
+
     // exports
     window.showMetadataPanel = showMetadataPanel;
     window.showStatus = showStatus;
@@ -107,5 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.performCleanup = performCleanup;
     window.autoZoomToBounds = autoZoomToBounds;
     window.fetchIfExists = fetchIfExists;
+    window.fetchFeaturesPDF = fetchFeaturesPDF;
 
 });

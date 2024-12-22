@@ -25,12 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Flags
     window.currentPolygonStyle = "smooth"; // "Sujuv" vs "Täpne" toggle state
 
-    /*
+    
     // GeoJSON global storage
     window.sea = null;    // Sea areas 
     window.lakes = null;  // Lakes 
     window.rivers = null; // Flowing water bodies 
-    */
+    
 
     console.log("Global variables initialized.");
 

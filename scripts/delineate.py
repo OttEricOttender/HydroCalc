@@ -584,7 +584,7 @@ aravoolu_features = [
     {
         "type": "Feature",
         "properties": {
-            "group_name": "Sügisene maksimaalne äravoolumoodul (q_sugis)",
+            "group_name": "Sygisene maksimaalne aravoolumoodul (q_sugis)",
             "value_cubic_m_per_sec": q_sugis,
         },
         "geometry": None
@@ -592,7 +592,7 @@ aravoolu_features = [
     {
         "type": "Feature",
         "properties": {
-            "group_name": "Kevadine maksimaalne äravoolumoodul (q_kevad)",
+            "group_name": "Kevadine maksimaalne aravoolumoodul (q_kevad)",
             "value_cubic_m_per_sec": q_kevad,
         },
         "geometry": None
