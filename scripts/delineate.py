@@ -123,7 +123,7 @@ print(prepare.url)
 # x, y = 600000.017, 6450000  # hardcoded for testing script-only
 
 # Define a window around the coordinates 
-buffer = 5000  # meters
+buffer = 2500  # meters
 
 
 try:
