@@ -1,7 +1,3 @@
-
-
-// The code that has been commented out is intended for the 30m rule check (from the water source)
-
 document.addEventListener("DOMContentLoaded", () => {
     // --- Defining globals ---
     window.url = 'http://127.0.0.1:5001'; // dynamic URL
@@ -35,41 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Global variables initialized.");
 
     // --- Defining globals complete ---
-
-    /*
-    // Function for retrieving GeoJSON files
-    async function loadGeoJSON(path) {
-        try {
-            const response = await fetch(path);
-            if (!response.ok) throw new Error(`Failed to load ${path}`);
-            const geojson = await response.json();
-            console.log(`Loaded GeoJSON: ${path}`);
-            return geojson;
-        } catch (error) {
-            console.error(error);
-            return null;
-        }
-    }
-
-    // --- Preloading GeoJSON Files in an IIFE ---
-    (async () => {
-        const seaPath = "./static/data/kr_mereala.geojson";
-        const lakesPath = "./static/data/kr_jarv.geojson";
-        const riversPath = "./static/data/kr_vooluvesi.geojson";
-
-        try {
-            window.sea = await loadGeoJSON(seaPath);
-            window.lakes = await loadGeoJSON(lakesPath);
-            window.rivers = await loadGeoJSON(riversPath);
-
-            console.log("GeoJSON files preloaded into global variables.");
-        } catch (error) {
-            console.error("Failed to preload GeoJSON files:", error);
-        }
-    })();
-
-    console.log("GeoJSON files preloaded into global variables.");
-    */
 
     // Add base layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

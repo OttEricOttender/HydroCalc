@@ -62,63 +62,7 @@ point2 = Point(lon, lat)
 buffer_distance = 1
 min_x, min_y = point.x - buffer_distance, point.y - buffer_distance
 max_x, max_y = point.x + buffer_distance, point.y + buffer_distance
-"""
-# Create the square polygon from the bounding box
-#square_polygon = Polygon([(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x, min_y), (min_x, min_y)])
-polygon_point = point.buffer(5)
 
-url_eelis = "https://gsavalik.envir.ee/geoserver/eelis/ows?"
-url_maaparandus = "https://inspire.geoportaal.ee/geoserver/HY_eesvoolud/wfs?"
-
-params_valg = dict(
-        service= 'WFS',
-        version= '1.0.0',
-        request= 'GetFeature',
-        typename= 'eelis:valgla_vooluvesi',
-        srsname= 'EPSG:4326',
-        CQL_FILTER= f"INTERSECTS(shape,{polygon_point})",
-        maxFeatures= "10",
-        outputFormat= 'json',
-)
-
-params_eesvoolud = dict(
-    service='WFS',
-    version='2.0.0',
-    request='GetFeature',
-    typenames='HY_eesvoolud:HY.PhysicalWaters.Waterbodies_eesvool',
-    srsname='EPSG:3301',
-    CQL_FILTER= f"DWithin(geom, POINT({x} {y}), 100, meters)",
-    maxFeatures="10",
-    outputFormat='application/json',
-)
-
-params_joed = dict(
-    service='WFS',
-    version='1.0.0',
-    request='GetFeature',
-    typename='eelis:kr_vooluvesi',
-    srsname='EPSG:4326',
-    CQL_FILTER=f"INTERSECTS(shape,{polygon_point})",
-    maxFeatures="10",
-    outputFormat='application/json',
-)
-
-# Fetch data from WFS using requests
-r = requests.get(url_eelis, params=params_valg)
-data = gpd.GeoDataFrame.from_features(geojson.loads(r.content), crs="EPSG:4326")
-
-r_eesvoolud = requests.get(url_maaparandus, params=params_eesvoolud)
-
-prepare = requests.PreparedRequest()
-prepare.prepare_url(url_maaparandus, params_eesvoolud)
-print(prepare.url)
-
-#eesvoolud = gpd.GeoDataFrame.from_features(geojson.loads(r_eesvoolud.content), crs="EPSG:4326")
-#eesvoolud.to_csv("../output/csv/eesvoolud.csv", index=False)
-#print(eesvoolud["geographicalname_geographicalname_spelling_spellingofname_text"])
-#print(data.columns)
-#print(data["veekogu_tyyp"], data["pindala"], data["veekogu_nimi"])
-"""
 # User-defined coordinates for catchment delineation
 # x, y = 600000.017, 6450000  # hardcoded for testing script-only
 

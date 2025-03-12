@@ -2,9 +2,6 @@
 /data
 /.idea
 /qodana.yaml
-/app/static/data
-/app/static/data/*
-!/app/static/data/
-!/app/static/data/.gitkeep
+
 
 

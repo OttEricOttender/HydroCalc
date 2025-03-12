@@ -23,8 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify({
                 easting: easting,
                 northing: northing
-            //    snapped_easting: snappedCoords.easting,
-            //    snapped_northing: snappedCoords.northing
             })
         })
         .then(response => response.json())
